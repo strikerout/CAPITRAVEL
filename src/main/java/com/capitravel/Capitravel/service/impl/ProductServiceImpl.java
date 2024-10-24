@@ -1,7 +1,8 @@
-package com.capitravel.Capitravel.service;
+package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.model.Product;
 import com.capitravel.Capitravel.repository.ProductRepository;
+import com.capitravel.Capitravel.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
