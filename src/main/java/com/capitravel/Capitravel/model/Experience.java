@@ -30,4 +30,14 @@ public class Experience {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @ManyToMany
+    @JoinTable(
+            name = "experience_property",
+            joinColumns = @JoinColumn(name = "experience_id"),
+            inverseJoinColumns = @JoinColumn(name = "property_id")
+    )
+
+    private List<Property> property;
+
 }

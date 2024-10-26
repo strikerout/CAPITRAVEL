@@ -2,8 +2,10 @@ package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.model.Experience;
+import com.capitravel.Capitravel.model.Property;
 import com.capitravel.Capitravel.repository.CategoryRepository;
 import com.capitravel.Capitravel.repository.ExperienceRepository;
+import com.capitravel.Capitravel.repository.PropertyRepository;
 import com.capitravel.Capitravel.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private PropertyRepository propertyRepository;
 
     @Override
     public List<Experience> getAllExperiences() {
@@ -38,6 +43,13 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .collect(Collectors.toList());
 
         experience.setCategories(categories);
+
+        List<Property> properties = experience.getProperty().stream()
+                .map(property -> propertyRepository.findById(property.getId())
+                        .orElseThrow(() -> new RuntimeException("Property not found")))
+                .collect(Collectors.toList());
+
+        experience.setProperty(properties);
         return experienceRepository.save(experience);
     }
 
@@ -51,6 +63,12 @@ public class ExperienceServiceImpl implements ExperienceService {
                         .orElseThrow(() -> new RuntimeException("Category not found")))
                 .collect(Collectors.toList());
 
+        List<Property> properties = updatedExperience.getProperty().stream()
+                .map(property -> propertyRepository.findById(property.getId())
+                        .orElseThrow(() -> new RuntimeException("Category not found")))
+                .collect(Collectors.toList());
+
+        existingExperience.setProperty(properties);
         existingExperience.setCategories(categories);
         existingExperience.setTitle(updatedExperience.getTitle());
         existingExperience.setCountry(updatedExperience.getCountry());
