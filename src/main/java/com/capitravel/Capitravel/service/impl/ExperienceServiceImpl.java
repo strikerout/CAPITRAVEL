@@ -1,14 +1,19 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.dto.ExperienceDTO;
+import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.model.Experience;
+import com.capitravel.Capitravel.model.Property;
 import com.capitravel.Capitravel.repository.CategoryRepository;
 import com.capitravel.Capitravel.repository.ExperienceRepository;
+import com.capitravel.Capitravel.repository.PropertyRepository;
 import com.capitravel.Capitravel.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +24,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private PropertyRepository propertyRepository;
 
     @Override
     public List<Experience> getAllExperiences() {
@@ -31,39 +39,66 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public Experience createExperience(Experience experience) {
-        List<Category> categories = experience.getCategories().stream()
-                .map(category -> categoryRepository.findById(category.getId())
-                        .orElseThrow(() -> new RuntimeException("Category not found")))
+    public Experience createExperience(ExperienceDTO experienceDTO) {
+        List<Category> categories = experienceDTO.getCategoryIds().stream()
+                .map(categoryId -> categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId)))
                 .collect(Collectors.toList());
 
+        List<Property> properties = experienceDTO.getPropertyIds().stream()
+                .map(propertyId -> propertyRepository.findById(propertyId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + propertyId)))
+                .collect(Collectors.toList());
+
+        Experience experience = new Experience();
+        experience.setTitle(experienceDTO.getTitle());
+        experience.setCountry(experienceDTO.getCountry());
+        experience.setUbication(experienceDTO.getUbication());
+        experience.setDescription(experienceDTO.getDescription());
+        experience.setImages(experienceDTO.getImages());
+        experience.setDuration(experienceDTO.getDuration());
         experience.setCategories(categories);
+        experience.setProperties(properties);
+        experience.setReputation(getRandomReputation());
+
         return experienceRepository.save(experience);
     }
 
     @Override
-    public Experience updateExperience(Long id, Experience updatedExperience) {
+    public Experience updateExperience(Long id, ExperienceDTO updatedExperienceDTO) {
         Experience existingExperience = experienceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Experience not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + id));
 
-        List<Category> categories = updatedExperience.getCategories().stream()
-                .map(category -> categoryRepository.findById(category.getId())
-                        .orElseThrow(() -> new RuntimeException("Category not found")))
+        List<Category> categories = updatedExperienceDTO.getCategoryIds().stream()
+                .map(categoryId -> categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId)))
                 .collect(Collectors.toList());
 
+        List<Property> properties = updatedExperienceDTO.getPropertyIds().stream()
+                .map(propertyId -> propertyRepository.findById(propertyId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Property not found with id: " + propertyId)))
+                .collect(Collectors.toList());
+
+        existingExperience.setTitle(updatedExperienceDTO.getTitle());
+        existingExperience.setCountry(updatedExperienceDTO.getCountry());
+        existingExperience.setUbication(updatedExperienceDTO.getUbication());
+        existingExperience.setDescription(updatedExperienceDTO.getDescription());
+        existingExperience.setImages(updatedExperienceDTO.getImages());
+        existingExperience.setDuration(updatedExperienceDTO.getDuration());
         existingExperience.setCategories(categories);
-        existingExperience.setTitle(updatedExperience.getTitle());
-        existingExperience.setCountry(updatedExperience.getCountry());
-        existingExperience.setUbication(updatedExperience.getUbication());
-        existingExperience.setDescription(updatedExperience.getDescription());
-        existingExperience.setImages(updatedExperience.getImages());
-        existingExperience.setDuration(updatedExperience.getDuration());
+        existingExperience.setProperties(properties);
 
         return experienceRepository.save(existingExperience);
     }
 
+
     @Override
     public void deleteExperience(Long id) {
         experienceRepository.deleteById(id);
+    }
+
+    private double getRandomReputation() {
+        double randomValue = ThreadLocalRandom.current().nextDouble(1.0, 5.0);
+        return Math.round(randomValue * 10.0) / 10.0;
     }
 }

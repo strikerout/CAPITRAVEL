@@ -18,6 +18,7 @@ public class Experience {
     private String ubication;
     private String description;
     private Integer duration;
+    private double reputation;
 
     @Lob
     @ElementCollection
@@ -30,4 +31,14 @@ public class Experience {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @ManyToMany
+    @JoinTable(
+            name = "experience_property",
+            joinColumns = @JoinColumn(name = "experience_id"),
+            inverseJoinColumns = @JoinColumn(name = "property_id")
+    )
+
+    private List<Property> properties;
+
 }
