@@ -58,7 +58,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setImages(experienceDTO.getImages());
         experience.setDuration(experienceDTO.getDuration());
         experience.setCategories(categories);
-        experience.setProperty(properties);
+        experience.setProperties(properties);
         experience.setReputation(getRandomReputation());
 
         return experienceRepository.save(experience);
@@ -86,7 +86,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         existingExperience.setImages(updatedExperienceDTO.getImages());
         existingExperience.setDuration(updatedExperienceDTO.getDuration());
         existingExperience.setCategories(categories);
-        existingExperience.setProperty(properties);
+        existingExperience.setProperties(properties);
 
         return experienceRepository.save(existingExperience);
     }
