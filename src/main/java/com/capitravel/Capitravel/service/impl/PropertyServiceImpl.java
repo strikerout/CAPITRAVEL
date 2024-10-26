@@ -21,7 +21,12 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property getPropertyById(Long id) {
-        return propertyRepository.findById(id).orElse(null);
+        Property idProperty = propertyRepository.findById(id).orElse(null);
+
+        if(idProperty!=null){
+            return idProperty;
+        }
+        throw new IllegalArgumentException("Category for id:" + id + " not found.");
     }
 
     @Override
@@ -31,25 +36,40 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property createProperty(Property property) {
-        return propertyRepository.save(property);
+
+        if(validateProperty(property)) {
+            return propertyRepository.save(property);
+        }
+        throw new IllegalArgumentException("Property does not follow basic structure.");
+
     }
 
     @Override
     public Property updateProperty(Long id, Property property) {
         Optional<Property> existingProperty = propertyRepository.findById(id);
 
-        if (existingProperty.isPresent()) {
+        if (existingProperty.isPresent() && validateProperty(property)) {
             Property updateProperty = existingProperty.get();
             updateProperty.setName(property.getName());
             updateProperty.setDescription(property.getDescription());
             updateProperty.setImage(property.getImage());
             return propertyRepository.save(updateProperty);
         }
-        return null;
+        throw new IllegalArgumentException("The Property for id:" + id + " not found.");
     }
 
     @Override
     public void deleteProperty(Long id) {
         propertyRepository.deleteById(id);
+    }
+
+    public boolean validateProperty (Property property){
+        if (property.getName() == null || property.getName().isEmpty() || property.getName().length() < 3 || property.getName().length() > 30) {
+            throw new IllegalArgumentException("Property name must be between 3 and 30 characters long.");
+        }
+        else if (property.getDescription() == null || property.getDescription().isEmpty() || property.getDescription().length() < 5 || property.getDescription().length() > 50) {
+            throw new IllegalArgumentException("Property description must be between 5 and 50 characters long.");
+        }
+        return true;
     }
 }
