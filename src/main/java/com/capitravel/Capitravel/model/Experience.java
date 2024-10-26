@@ -18,6 +18,7 @@ public class Experience {
     private String ubication;
     private String description;
     private Integer duration;
+    private double reputation;
 
     @Lob
     @ElementCollection
@@ -38,6 +39,6 @@ public class Experience {
             inverseJoinColumns = @JoinColumn(name = "property_id")
     )
 
-    private List<Property> property;
+    private List<Property> properties;
 
 }
