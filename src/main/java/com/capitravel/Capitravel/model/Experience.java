@@ -18,6 +18,7 @@ public class Experience {
     private String ubication;
     private String description;
     private Integer duration;
+    private double reputation;
 
     @Lob
     @ElementCollection

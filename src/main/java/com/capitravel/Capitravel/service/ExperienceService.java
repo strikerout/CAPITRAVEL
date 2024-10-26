@@ -1,5 +1,6 @@
 package com.capitravel.Capitravel.service;
 
+import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.model.Experience;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface ExperienceService {
 
     Experience getExperienceById(Long id);
 
-    Experience createExperience(Experience experience);
+    Experience createExperience(ExperienceDTO experience);
 
-    Experience updateExperience(Long id, Experience updatedExperience);
+    Experience updateExperience(Long id, ExperienceDTO updatedExperience);
 
     void deleteExperience(Long id);
 }
