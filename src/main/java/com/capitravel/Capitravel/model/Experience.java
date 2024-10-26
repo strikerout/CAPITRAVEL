@@ -39,6 +39,6 @@ public class Experience {
             inverseJoinColumns = @JoinColumn(name = "property_id")
     )
 
-    private List<Property> property;
+    private List<Property> properties;
 
 }
