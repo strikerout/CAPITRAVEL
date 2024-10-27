@@ -1,5 +1,6 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.dto.CategoryDTO;
@@ -29,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
             return idCategory;
         }
 
-        throw new IllegalArgumentException("Category for id:" + id + " not found.");
+        throw new ResourceNotFoundException("Category for id: " + id + " not found.");
     }
 
     @Override
@@ -42,28 +43,44 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
-        return categoryRepository.save(category);
+        category.setImage(categoryDTO.getImage());
+
+        if(categoryExistsByName(category.getName()).isEmpty()){
+            return categoryRepository.save(category);
+        }
+        throw new DuplicatedResourceException("Category with name '" + category.getName() + "' already exists.");
 
     }
 
     @Override
     public Category updateCategory(Long id, CategoryDTO categoryDTO) {
+
         Optional<Category> existingCategory = categoryRepository.findById(id);
 
-        if (existingCategory.isPresent()) {
-
-                Category updatedCategory = existingCategory.get();
-                updatedCategory.setName(categoryDTO.getName());
-                updatedCategory.setDescription(categoryDTO.getDescription());
-                return categoryRepository.save(updatedCategory);
-
+        if (existingCategory.isEmpty()) {
+            throw new ResourceNotFoundException("The Category for id: " + id + " not found.");
         }
-        throw new ResourceNotFoundException("The Category for id:" + id + " not found.");
+
+        Optional<Category> sameNameCategory = categoryRepository.findByName(categoryDTO.getName());
+
+        if (sameNameCategory.isPresent() && !sameNameCategory.get().getId().equals(id)) {
+            throw new DuplicatedResourceException("Category with name '" + categoryDTO.getName() + "' already exists.");
+        }
+
+        Category updatedCategory = existingCategory.get();
+        updatedCategory.setName(categoryDTO.getName());
+        updatedCategory.setDescription(categoryDTO.getDescription());
+        updatedCategory.setImage(categoryDTO.getImage());
+        return categoryRepository.save(updatedCategory);
     }
 
     @Override
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    public Optional<Category> categoryExistsByName(String name) {
+        return categoryRepository.findByName(name);
     }
 
 }
