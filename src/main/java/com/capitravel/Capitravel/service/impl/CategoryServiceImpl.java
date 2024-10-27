@@ -1,6 +1,8 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
+import com.capitravel.Capitravel.dto.CategoryDTO;
 import com.capitravel.Capitravel.repository.CategoryRepository;
 import com.capitravel.Capitravel.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,27 +38,27 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory(Category category) {
+    public Category createCategory(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        category.setName(categoryDTO.getName());
+        category.setDescription(categoryDTO.getDescription());
+        return categoryRepository.save(category);
 
-       if(validateCategory(category)) {
-           return categoryRepository.save(category);
-       }
-        throw new IllegalArgumentException("Category does not follow basic structure.");
     }
 
     @Override
-    public Category updateCategory(Long id, Category category) {
+    public Category updateCategory(Long id, CategoryDTO categoryDTO) {
         Optional<Category> existingCategory = categoryRepository.findById(id);
 
-        if (existingCategory.isPresent() && validateCategory(category)) {
+        if (existingCategory.isPresent()) {
 
                 Category updatedCategory = existingCategory.get();
-                updatedCategory.setName(category.getName());
-                updatedCategory.setDescription(category.getDescription());
+                updatedCategory.setName(categoryDTO.getName());
+                updatedCategory.setDescription(categoryDTO.getDescription());
                 return categoryRepository.save(updatedCategory);
 
         }
-        throw new IllegalArgumentException("The Category for id:" + id + " not found.");
+        throw new ResourceNotFoundException("The Category for id:" + id + " not found.");
     }
 
     @Override
@@ -64,13 +66,4 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public boolean validateCategory (Category category){
-        if (category.getName() == null || category.getName().isEmpty() || category.getName().length() < 3 || category.getName().length() > 50) {
-            throw new IllegalArgumentException("Category name must be between 3 and 50 characters long.");
-        }
-        else if (category.getDescription() == null || category.getDescription().isEmpty() || category.getDescription().length() < 5 || category.getDescription().length() > 100) {
-            throw new IllegalArgumentException("Category description must be between 5 and 100 characters long.");
-        }
-        return true;
-    }
 }

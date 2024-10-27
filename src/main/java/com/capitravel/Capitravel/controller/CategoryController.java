@@ -2,9 +2,11 @@ package com.capitravel.Capitravel.controller;
 
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.capitravel.Capitravel.dto.CategoryDTO;
 
 import java.util.List;
 
@@ -36,14 +38,14 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        Category createdCategory = categoryService.createCategory(category);
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        Category createdCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(201).body(createdCategory);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
-        Category updatedCategory = categoryService.updateCategory(id, category);
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryDTO categoryDTO) {
+        Category updatedCategory = categoryService.updateCategory(id, categoryDTO);
         if (updatedCategory != null) {
             return ResponseEntity.ok(updatedCategory);
         } else {
