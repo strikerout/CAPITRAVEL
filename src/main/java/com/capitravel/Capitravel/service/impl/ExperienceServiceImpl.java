@@ -1,6 +1,7 @@
 package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.dto.ExperienceDTO;
+import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.model.Experience;
@@ -40,6 +41,10 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public Experience createExperience(ExperienceDTO experienceDTO) {
+        if (experienceRepository.existsByTitle(experienceDTO.getTitle())) {
+            throw new DuplicatedResourceException("An experience with title " + experienceDTO.getTitle() + " already exists");
+        }
+
         List<Category> categories = experienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId)))
@@ -69,6 +74,11 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience existingExperience = experienceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + id));
 
+        if (!existingExperience.getTitle().equals(updatedExperienceDTO.getTitle()) &&
+                experienceRepository.existsByTitle(updatedExperienceDTO.getTitle())) {
+            throw new DuplicatedResourceException("An experience with title " + updatedExperienceDTO.getTitle() + " already exists");
+        }
+
         List<Category> categories = updatedExperienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId)))
@@ -90,7 +100,6 @@ public class ExperienceServiceImpl implements ExperienceService {
 
         return experienceRepository.save(existingExperience);
     }
-
 
     @Override
     public void deleteExperience(Long id) {
