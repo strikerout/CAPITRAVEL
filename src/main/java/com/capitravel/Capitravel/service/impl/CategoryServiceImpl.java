@@ -1,6 +1,8 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
+import com.capitravel.Capitravel.dto.CategoryDTO;
 import com.capitravel.Capitravel.repository.CategoryRepository;
 import com.capitravel.Capitravel.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id).orElse(null);
+        Category category = categoryRepository.findById(id).orElse(null);
+
+        if(category != null){
+            return category;
+        }
+
+        throw new IllegalArgumentException("Category for id:" + id + " not found.");
     }
 
     @Override
@@ -30,21 +38,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory(Category category) {
+    public Category createCategory(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        category.setName(categoryDTO.getName());
+        category.setDescription(categoryDTO.getDescription());
         return categoryRepository.save(category);
     }
 
     @Override
-    public Category updateCategory(Long id, Category category) {
+    public Category updateCategory(Long id, CategoryDTO categoryDTO) {
         Optional<Category> existingCategory = categoryRepository.findById(id);
 
         if (existingCategory.isPresent()) {
             Category updatedCategory = existingCategory.get();
-            updatedCategory.setName(category.getName());
-            updatedCategory.setDescription(category.getDescription());
+            updatedCategory.setName(categoryDTO.getName());
+            updatedCategory.setDescription(categoryDTO.getDescription());
             return categoryRepository.save(updatedCategory);
         }
-        return null;
+        throw new ResourceNotFoundException("The Category for id:" + id + " not found.");
     }
 
     @Override
