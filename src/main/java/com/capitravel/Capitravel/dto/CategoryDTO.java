@@ -13,5 +13,4 @@ public class CategoryDTO {
     @NotBlank(message = "Description is required")
     @Size(min= 15,max = 256, message = "Description must be between 15 and 256 characters")
     private String description;
-
 }

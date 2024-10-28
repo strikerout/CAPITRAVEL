@@ -23,10 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        Category idCategory = categoryRepository.findById(id).orElse(null);
+        Category category = categoryRepository.findById(id).orElse(null);
 
-        if(idCategory!=null){
-            return idCategory;
+        if(category != null){
+            return category;
         }
 
         throw new IllegalArgumentException("Category for id:" + id + " not found.");
@@ -43,7 +43,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         return categoryRepository.save(category);
-
     }
 
     @Override
@@ -51,12 +50,10 @@ public class CategoryServiceImpl implements CategoryService {
         Optional<Category> existingCategory = categoryRepository.findById(id);
 
         if (existingCategory.isPresent()) {
-
-                Category updatedCategory = existingCategory.get();
-                updatedCategory.setName(categoryDTO.getName());
-                updatedCategory.setDescription(categoryDTO.getDescription());
-                return categoryRepository.save(updatedCategory);
-
+            Category updatedCategory = existingCategory.get();
+            updatedCategory.setName(categoryDTO.getName());
+            updatedCategory.setDescription(categoryDTO.getDescription());
+            return categoryRepository.save(updatedCategory);
         }
         throw new ResourceNotFoundException("The Category for id:" + id + " not found.");
     }
@@ -65,5 +62,4 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }
-
 }
