@@ -48,13 +48,12 @@ public class CategoryServiceImpl implements CategoryService {
         if(categoryExistsByName(category.getName()).isEmpty()){
             return categoryRepository.save(category);
         }
-        throw new DuplicatedResourceException("Category with name '" + category.getName() + "' already exists.");
 
+        throw new DuplicatedResourceException("Category with name '" + category.getName() + "' already exists.");
     }
 
     @Override
     public Category updateCategory(Long id, CategoryDTO categoryDTO) {
-
         Optional<Category> existingCategory = categoryRepository.findById(id);
 
         if (existingCategory.isEmpty()) {
@@ -71,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
         updatedCategory.setName(categoryDTO.getName());
         updatedCategory.setDescription(categoryDTO.getDescription());
         updatedCategory.setImage(categoryDTO.getImage());
+
         return categoryRepository.save(updatedCategory);
     }
 

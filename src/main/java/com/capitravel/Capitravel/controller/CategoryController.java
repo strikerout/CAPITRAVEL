@@ -24,6 +24,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
+
         if (category != null) {
             return ResponseEntity.ok(category);
         } else {
@@ -46,6 +47,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryDTO categoryDTO) {
         Category updatedCategory = categoryService.updateCategory(id, categoryDTO);
+
         if (updatedCategory != null) {
             return ResponseEntity.ok(updatedCategory);
         } else {
