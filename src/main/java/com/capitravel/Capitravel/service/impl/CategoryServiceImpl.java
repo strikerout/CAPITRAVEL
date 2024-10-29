@@ -46,9 +46,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(CategoryDTO categoryDTO) {
         Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
-        category.setImage(categoryDTO.getImage());
+        category.setName(categoryDTO.getName().trim());
+        category.setDescription(categoryDTO.getDescription().trim());
+        category.setImage(categoryDTO.getImage().trim());
 
         if(categoryExistsByName(category.getName()).isEmpty()){
             return categoryRepository.save(category);
@@ -72,9 +72,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category updatedCategory = existingCategory.get();
-        updatedCategory.setName(categoryDTO.getName());
-        updatedCategory.setDescription(categoryDTO.getDescription());
-        updatedCategory.setImage(categoryDTO.getImage());
+        updatedCategory.setName(categoryDTO.getName().trim());
+        updatedCategory.setDescription(categoryDTO.getDescription().trim());
+        updatedCategory.setImage(categoryDTO.getImage().trim());
 
         return categoryRepository.save(updatedCategory);
     }
