@@ -14,6 +14,4 @@ public interface ExperienceRepository extends JpaRepository<Experience, Long> {
 
     @Query("SELECT e FROM Experience e JOIN e.properties p WHERE p.id = :propertyId")
     List<Experience> findByPropertyId(@Param("propertyId") Long propertyId);
-
-
 }
