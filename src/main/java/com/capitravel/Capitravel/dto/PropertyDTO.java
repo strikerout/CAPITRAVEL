@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PropertyDTO {
 
-    @NotBlank(message = "Name is requiered.")
+    @NotBlank(message = "Name is required")
     @Size(min= 3,max = 32, message = "Name must be between 3 and 32 characters")
     private String name;
 
