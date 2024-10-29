@@ -26,10 +26,10 @@ public class PropertyServiceImpl implements PropertyService {
     public Property getPropertyById(Long id) {
         Property property = propertyRepository.findById(id).orElse(null);
 
-        if(property!=null){
+        if(property != null){
             return property;
         }
-        throw new ResourceNotFoundException("Property for id:" + id + " not found.");
+        throw new ResourceNotFoundException("Property for id: " + id + " not found.");
     }
 
     @Override
@@ -40,7 +40,6 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property createProperty(PropertyDTO propertyDTO) {
-
         Property property = new Property();
         property.setName(propertyDTO.getName().trim());
         property.setDescription(propertyDTO.getDescription().trim());
@@ -58,6 +57,12 @@ public class PropertyServiceImpl implements PropertyService {
         Optional<Property> existingProperty = propertyRepository.findById(id);
 
         if (existingProperty.isEmpty()) {
+            throw new ResourceNotFoundException("The Property for id: " + id + " not found.");
+        }
+
+        Optional<Property> sameNameProperty = propertyRepository.findByName(propertyDTO.getName());
+
+        if (sameNameProperty.isPresent() && !sameNameProperty.get().getId().equals(id)) {
             throw new DuplicatedResourceException("Property with name '" + propertyDTO.getName() + "' already exists.");
         }
 

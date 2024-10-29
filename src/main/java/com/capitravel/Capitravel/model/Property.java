@@ -2,11 +2,8 @@ package com.capitravel.Capitravel.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
 @Entity
-@Getter
-@Setter
 @Data
 public class Property {
 
@@ -19,7 +16,6 @@ public class Property {
 
         @Lob
         private String image;
-
 }
 
 
