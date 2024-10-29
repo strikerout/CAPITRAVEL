@@ -1,10 +1,13 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.exception.ResourceInUseException;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
 import com.capitravel.Capitravel.dto.CategoryDTO;
+import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.repository.CategoryRepository;
+import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +19,12 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ExperienceRepository experienceRepository;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ExperienceRepository experienceRepository) {
         this.categoryRepository = categoryRepository;
+        this.experienceRepository = experienceRepository;
     }
 
     @Override
@@ -76,6 +81,22 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
+        Optional<Category> existingCategory = categoryRepository.findById(id);
+
+        if (existingCategory.isEmpty()) {
+            throw new ResourceNotFoundException("The Category for id: " + id + " was not found.");
+        }
+
+        List<Experience> experiencesWithCategory = experienceRepository.findByCategoryId(id);
+
+        if (!experiencesWithCategory.isEmpty()) {
+            List<Long> experienceIds = experiencesWithCategory.stream()
+                    .map(Experience::getId)
+                    .toList();
+
+            throw  new ResourceInUseException("Cannot delete category with ID " + id + " as it is associated with the following experiences: " + experienceIds );
+        }
+
         categoryRepository.deleteById(id);
     }
 

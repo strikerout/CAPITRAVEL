@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -103,6 +104,11 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public void deleteExperience(Long id) {
+        Optional<Experience> existingExperience = experienceRepository.findById(id);
+
+        if (existingExperience.isEmpty()) {
+            throw new ResourceNotFoundException("The Experience for id: " + id + " was not found.");
+        }
         experienceRepository.deleteById(id);
     }
 
