@@ -1,14 +1,18 @@
 package com.capitravel.Capitravel.controller;
 
+import com.capitravel.Capitravel.dto.PropertyDTO;
 import com.capitravel.Capitravel.model.Property;
 import com.capitravel.Capitravel.service.PropertyService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/properties")
+@Valid
 public class PropertyController {
 
     private final PropertyService propertyService;
@@ -35,14 +39,14 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<Property> createProperty(@RequestBody Property property){
-        Property createdProperty = propertyService.createProperty(property);
+    public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO propertyDTO){
+        Property createdProperty = propertyService.createProperty(propertyDTO);
         return ResponseEntity.status(201).body(createdProperty);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable Long id, @RequestBody Property property){
-        Property updateProperty = propertyService.updateProperty(id, property);
+    public ResponseEntity<Property> updateProperty(@PathVariable Long id,@Valid @RequestBody PropertyDTO propertyDTO){
+        Property updateProperty = propertyService.updateProperty(id, propertyDTO);
         if (updateProperty != null) {
             return ResponseEntity.ok(updateProperty);
         }else {

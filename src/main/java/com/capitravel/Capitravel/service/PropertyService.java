@@ -1,5 +1,6 @@
 package com.capitravel.Capitravel.service;
 
+import com.capitravel.Capitravel.dto.PropertyDTO;
 import com.capitravel.Capitravel.model.Property;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface PropertyService {
 
     List<Property> getAllProperty();
 
-    Property createProperty(Property property);
+    Property createProperty(PropertyDTO propertyDTO);
 
-    Property updateProperty(Long id, Property property);
+    Property updateProperty(Long id, PropertyDTO propertyDTO);
 
     void deleteProperty(Long id);
 }
