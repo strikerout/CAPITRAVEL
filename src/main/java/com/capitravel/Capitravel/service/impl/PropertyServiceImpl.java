@@ -1,5 +1,8 @@
 package com.capitravel.Capitravel.service.impl;
 
+import com.capitravel.Capitravel.dto.PropertyDTO;
+import com.capitravel.Capitravel.exception.DuplicatedResourceException;
+import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Property;
 import com.capitravel.Capitravel.repository.PropertyRepository;
 import com.capitravel.Capitravel.service.PropertyService;
@@ -21,12 +24,12 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property getPropertyById(Long id) {
-        Property idProperty = propertyRepository.findById(id).orElse(null);
+        Property property = propertyRepository.findById(id).orElse(null);
 
-        if(idProperty!=null){
-            return idProperty;
+        if(property!=null){
+            return property;
         }
-        throw new IllegalArgumentException("Category for id:" + id + " not found.");
+        throw new ResourceNotFoundException("Property for id:" + id + " not found.");
     }
 
     @Override
@@ -34,28 +37,36 @@ public class PropertyServiceImpl implements PropertyService {
         return propertyRepository.findAll();
     }
 
-    @Override
-    public Property createProperty(Property property) {
 
-        if(validateProperty(property)) {
+    @Override
+    public Property createProperty(PropertyDTO propertyDTO) {
+
+        Property property = new Property();
+        property.setName(propertyDTO.getName().trim());
+        property.setDescription(propertyDTO.getDescription().trim());
+        property.setImage(propertyDTO.getImage().trim());
+
+        if(propertyExistsByName(property.getName()).isEmpty()) {
             return propertyRepository.save(property);
         }
-        throw new IllegalArgumentException("Property does not follow basic structure.");
+        throw new DuplicatedResourceException("Property with name '" + property.getName() + "' already exists.");
 
     }
 
     @Override
-    public Property updateProperty(Long id, Property property) {
+    public Property updateProperty(Long id, PropertyDTO propertyDTO) {
         Optional<Property> existingProperty = propertyRepository.findById(id);
 
-        if (existingProperty.isPresent() && validateProperty(property)) {
-            Property updateProperty = existingProperty.get();
-            updateProperty.setName(property.getName());
-            updateProperty.setDescription(property.getDescription());
-            updateProperty.setImage(property.getImage());
-            return propertyRepository.save(updateProperty);
+        if (existingProperty.isEmpty()) {
+            throw new DuplicatedResourceException("Property with name '" + propertyDTO.getName() + "' already exists.");
         }
-        throw new IllegalArgumentException("The Property for id:" + id + " not found.");
+
+        Property updatedProperty = existingProperty.get();
+        updatedProperty.setName(propertyDTO.getName().trim());
+        updatedProperty.setDescription(propertyDTO.getDescription().trim());
+        updatedProperty.setImage(propertyDTO.getImage().trim());
+
+        return propertyRepository.save(updatedProperty);
     }
 
     @Override
@@ -63,13 +74,7 @@ public class PropertyServiceImpl implements PropertyService {
         propertyRepository.deleteById(id);
     }
 
-    public boolean validateProperty (Property property){
-        if (property.getName() == null || property.getName().isEmpty() || property.getName().length() < 3 || property.getName().length() > 30) {
-            throw new IllegalArgumentException("Property name must be between 3 and 30 characters long.");
-        }
-        else if (property.getDescription() == null || property.getDescription().isEmpty() || property.getDescription().length() < 5 || property.getDescription().length() > 50) {
-            throw new IllegalArgumentException("Property description must be between 5 and 50 characters long.");
-        }
-        return true;
+    public Optional<Property> propertyExistsByName(String name) {
+        return propertyRepository.findByName(name.trim());
     }
 }
