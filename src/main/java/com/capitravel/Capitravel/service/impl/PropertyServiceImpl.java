@@ -1,9 +1,12 @@
 package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.dto.PropertyDTO;
+import com.capitravel.Capitravel.exception.ResourceInUseException;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
+import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.model.Property;
+import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.repository.PropertyRepository;
 import com.capitravel.Capitravel.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,12 @@ import java.util.Optional;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final ExperienceRepository experienceRepository;
 
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository){
+    public PropertyServiceImpl(PropertyRepository propertyRepository, ExperienceRepository experienceRepository){
         this.propertyRepository = propertyRepository;
+        this.experienceRepository = experienceRepository;
     }
 
     @Override
@@ -29,6 +34,7 @@ public class PropertyServiceImpl implements PropertyService {
         if(property != null){
             return property;
         }
+
         throw new ResourceNotFoundException("Property for id: " + id + " not found.");
     }
 
@@ -48,8 +54,8 @@ public class PropertyServiceImpl implements PropertyService {
         if(propertyExistsByName(property.getName()).isEmpty()) {
             return propertyRepository.save(property);
         }
-        throw new DuplicatedResourceException("Property with name '" + property.getName() + "' already exists.");
 
+        throw new DuplicatedResourceException("Property with name '" + property.getName() + "' already exists.");
     }
 
     @Override
@@ -76,6 +82,22 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void deleteProperty(Long id) {
+        Optional<Property> existingProperty = propertyRepository.findById(id);
+
+        if (existingProperty.isEmpty()) {
+            throw new ResourceNotFoundException("The Property for id: " + id + " was not found.");
+        }
+        
+        List<Experience> experiencesWithProperty = experienceRepository.findByPropertyId(id);
+
+        if (!experiencesWithProperty.isEmpty()) {
+            List<Long> experienceIds = experiencesWithProperty.stream()
+                    .map(Experience::getId)
+                    .toList();
+
+            throw  new ResourceInUseException("Cannot delete property with ID " + id + " as it is associated with the following experiences: " + experienceIds );
+        }
+
         propertyRepository.deleteById(id);
     }
 
