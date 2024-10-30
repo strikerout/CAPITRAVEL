@@ -1,10 +1,13 @@
 package com.capitravel.Capitravel.exception;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,5 +46,21 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-}
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException ex, WebRequest request) {
+
+        Map<String, String> errorDetails = new HashMap<>();
+
+        if (ex.getCause() instanceof JsonMappingException) {
+            JsonMappingException jme = (JsonMappingException) ex.getCause();
+            String fieldName = jme.getPath().get(0).getFieldName();
+            errorDetails.put("error", "Invalid input for '" + fieldName + "': please provide a value of the correct type.");
+        } else {
+            errorDetails.put("error", "Invalid request payload: please check the data types of your input.");
+        }
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+}
