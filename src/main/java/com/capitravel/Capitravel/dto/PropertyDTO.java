@@ -15,6 +15,6 @@ public class PropertyDTO {
     @Size(min= 15,max = 256, message = "Description must be between 15 and 256 characters")
     private String description;
 
-    @NotBlank(message =  "Image is required")
+    @NotBlank(message = "Image is required")
     private String image;
 }
