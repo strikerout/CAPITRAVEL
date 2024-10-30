@@ -17,7 +17,7 @@ public class ExperienceDTO {
     private String country;
 
     @NotBlank(message = "Ubication is required")
-    @Size(min = 2, max = 128, message = "Ubication must be between 10 and 128 characters")
+    @Size(min = 2, max = 128, message = "Ubication must be between 2 and 128 characters")
     private String ubication;
 
     @NotBlank(message = "Description is required")
