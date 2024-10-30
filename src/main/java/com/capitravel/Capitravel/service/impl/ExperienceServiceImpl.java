@@ -13,13 +13,18 @@ import com.capitravel.Capitravel.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
 public class ExperienceServiceImpl implements ExperienceService {
+
+    public static final String CATEGORIES_FIELD_NAME = "Categories";
+    public static final String PROPERTIES_FIELD_NAME = "Properties";
 
     @Autowired
     private ExperienceRepository experienceRepository;
@@ -45,6 +50,9 @@ public class ExperienceServiceImpl implements ExperienceService {
         if (experienceRepository.existsByTitle(experienceDTO.getTitle())) {
             throw new DuplicatedResourceException("An experience with title " + experienceDTO.getTitle() + " already exists");
         }
+
+        validateNoDuplicates(experienceDTO.getCategoryIds(), CATEGORIES_FIELD_NAME);
+        validateNoDuplicates(experienceDTO.getPropertyIds(), PROPERTIES_FIELD_NAME);
 
         List<Category> categories = experienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
@@ -80,6 +88,9 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new DuplicatedResourceException("An experience with title " + updatedExperienceDTO.getTitle() + " already exists");
         }
 
+        validateNoDuplicates(updatedExperienceDTO.getCategoryIds(), CATEGORIES_FIELD_NAME);
+        validateNoDuplicates(updatedExperienceDTO.getPropertyIds(), PROPERTIES_FIELD_NAME);
+
         List<Category> categories = updatedExperienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId)))
@@ -110,6 +121,13 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new ResourceNotFoundException("The Experience for id: " + id + " was not found.");
         }
         experienceRepository.deleteById(id);
+    }
+
+    private void validateNoDuplicates(List<Long> ids, String fieldName) {
+        Set<Long> uniqueIds = new HashSet<>(ids);
+        if (uniqueIds.size() < ids.size()) {
+            throw new DuplicatedResourceException("Duplicated " + fieldName + " are not allowed.");
+        }
     }
 
     private double getRandomReputation() {
