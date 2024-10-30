@@ -25,6 +25,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     public static final String CATEGORIES_FIELD_NAME = "Categories";
     public static final String PROPERTIES_FIELD_NAME = "Properties";
+
     @Autowired
     private ExperienceRepository experienceRepository;
 
