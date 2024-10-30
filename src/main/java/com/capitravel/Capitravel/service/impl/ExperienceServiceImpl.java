@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class ExperienceServiceImpl implements ExperienceService {
 
+    public static final String CATEGORIES_FIELD_NAME = "Categories";
+    public static final String PROPERTIES_FIELD_NAME = "Properties";
     @Autowired
     private ExperienceRepository experienceRepository;
 
@@ -48,8 +50,8 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new DuplicatedResourceException("An experience with title " + experienceDTO.getTitle() + " already exists");
         }
 
-        validateNoDuplicates(experienceDTO.getCategoryIds(), "Category");
-        validateNoDuplicates(experienceDTO.getPropertyIds(), "Property");
+        validateNoDuplicates(experienceDTO.getCategoryIds(), CATEGORIES_FIELD_NAME);
+        validateNoDuplicates(experienceDTO.getPropertyIds(), PROPERTIES_FIELD_NAME);
 
         List<Category> categories = experienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
@@ -85,8 +87,8 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new DuplicatedResourceException("An experience with title " + updatedExperienceDTO.getTitle() + " already exists");
         }
 
-        validateNoDuplicates(updatedExperienceDTO.getCategoryIds(), "Category");
-        validateNoDuplicates(updatedExperienceDTO.getPropertyIds(), "Property");
+        validateNoDuplicates(updatedExperienceDTO.getCategoryIds(), CATEGORIES_FIELD_NAME);
+        validateNoDuplicates(updatedExperienceDTO.getPropertyIds(), PROPERTIES_FIELD_NAME);
 
         List<Category> categories = updatedExperienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
@@ -123,7 +125,7 @@ public class ExperienceServiceImpl implements ExperienceService {
     private void validateNoDuplicates(List<Long> ids, String fieldName) {
         Set<Long> uniqueIds = new HashSet<>(ids);
         if (uniqueIds.size() < ids.size()) {
-            throw new DuplicatedResourceException("Duplicate " + fieldName + " IDs are not allowed.");
+            throw new DuplicatedResourceException("Duplicated " + fieldName + " are not allowed.");
         }
     }
 
