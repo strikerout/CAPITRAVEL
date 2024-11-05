@@ -47,9 +47,9 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public Property createProperty(PropertyDTO propertyDTO) {
         Property property = new Property();
-        property.setName(propertyDTO.getName().trim());
-        property.setDescription(propertyDTO.getDescription().trim());
-        property.setImage(propertyDTO.getImage().trim());
+        property.setName(propertyDTO.getName());
+        property.setDescription(propertyDTO.getDescription());
+        property.setImage(propertyDTO.getImage());
 
         if(propertyExistsByName(property.getName()).isEmpty()) {
             return propertyRepository.save(property);
@@ -73,9 +73,9 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         Property updatedProperty = existingProperty.get();
-        updatedProperty.setName(propertyDTO.getName().trim());
-        updatedProperty.setDescription(propertyDTO.getDescription().trim());
-        updatedProperty.setImage(propertyDTO.getImage().trim());
+        updatedProperty.setName(propertyDTO.getName());
+        updatedProperty.setDescription(propertyDTO.getDescription());
+        updatedProperty.setImage(propertyDTO.getImage());
 
         return propertyRepository.save(updatedProperty);
     }
