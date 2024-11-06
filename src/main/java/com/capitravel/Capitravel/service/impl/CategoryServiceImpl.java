@@ -103,5 +103,4 @@ public class CategoryServiceImpl implements CategoryService {
     public Optional<Category> categoryExistsByName(String name) {
         return categoryRepository.findByName(name);
     }
-
 }
