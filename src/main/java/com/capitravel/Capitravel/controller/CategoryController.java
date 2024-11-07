@@ -68,7 +68,7 @@ public class CategoryController {
     @PostMapping("/register/{id}")
     public String registerUser(@PathVariable Long id) {
         // Lógica de registro del usuario
-
+        
         try {
             String confirmationLink = "http://tu-aplicacion.com/confirmar?token=ejemploToken";
             String body = "<h1>Bienvenido a nuestra aplicación</h1>"
