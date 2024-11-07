@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicatedResourceException.class)
-    public ResponseEntity<Map<String, String>> handleDuplicateCategoryException(DuplicatedResourceException ex) {
+    public ResponseEntity<Map<String, String>> handleDuplicateResourceException(DuplicatedResourceException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
