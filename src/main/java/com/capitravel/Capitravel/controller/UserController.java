@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @Validated
@@ -18,6 +20,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
+    }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody UserDTO userDTO) {
