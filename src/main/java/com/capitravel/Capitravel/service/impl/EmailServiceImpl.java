@@ -18,6 +18,7 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
 
     public void sendConfirmationEmail(String to, String subject, String body) throws MessagingException {
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -26,6 +27,26 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(body, true); // true para permitir HTML
 
         mailSender.send(message);
+    }
+
+    public void sendConfirmationEmail(String mail) {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper;
+        try {
+            helper = new MimeMessageHelper(message, true);
+            String confirmationLink = "http://capitravel.com/confirmar?";
+            String body = "<h1>Bienvenido a nuestra aplicación</h1>"
+                    + "<p>Por favor, haz clic en el siguiente enlace para logearte a tu cuenta:</p>"
+                    + "<a href='" + confirmationLink + "'>Confirmar cuenta</a>";
+
+
+            helper.setTo(mail);
+            helper.setSubject("Confirma tu cuenta");
+            helper.setText(body, true); // true para permitir HTML
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
