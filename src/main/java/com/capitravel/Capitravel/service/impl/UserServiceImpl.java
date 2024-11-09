@@ -20,7 +20,7 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    public static final String DEFAULT_ROLE = "USER";
+    public static final String DEFAULT_ROLE = "ROLE_USER";
     @Autowired
     private UserRepository userRepository;
 
