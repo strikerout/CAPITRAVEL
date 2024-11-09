@@ -1,6 +1,5 @@
 package com.capitravel.Capitravel.service.impl;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
@@ -52,10 +51,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public List<Experience> getExperiencesByCategories(Long categoryId){
-
         Category categoryById = categoryService.getCategoryById(categoryId);
         return experienceRepository.findByCategoryId(categoryId);
-
     }
 
     @Override
