@@ -7,6 +7,7 @@ import com.capitravel.Capitravel.model.Role;
 import com.capitravel.Capitravel.model.User;
 import com.capitravel.Capitravel.repository.RoleRepository;
 import com.capitravel.Capitravel.repository.UserRepository;
+import com.capitravel.Capitravel.service.EmailService;
 import com.capitravel.Capitravel.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -52,7 +56,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Role 'USER' not found"));
         user.setRole(role);
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        emailService.sendConfirmationEmail(savedUser);
+        return savedUser;
     }
 
     @Override
@@ -71,5 +77,11 @@ public class UserServiceImpl implements UserService {
     public User getUser(String username) {
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+    }
+
+    @Override
+    public User getUserByID(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 }
