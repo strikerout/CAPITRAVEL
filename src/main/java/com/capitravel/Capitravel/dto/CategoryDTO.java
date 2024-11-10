@@ -10,7 +10,7 @@ import lombok.Data;
 public class CategoryDTO {
 
     @NotBlank(message = "Name is required")
-    @Size(min= 3,max = 32, message = "Name must be between 3 and 32 characters")
+    @Size(min= 3,max = 16, message = "Name must be between 3 and 16 characters")
     @JsonDeserialize(using = TrimmingStringDeserializer.class)
     private String name;
 
