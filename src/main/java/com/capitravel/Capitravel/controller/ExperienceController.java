@@ -31,6 +31,11 @@ public class ExperienceController {
         return experience != null ? ResponseEntity.ok(experience) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/by-category/{categoryId}")
+    public List<Experience>getExperiencesByCategories(@PathVariable Long categoryId) {
+        return experienceService.getExperiencesByCategories(categoryId);
+    }
+
     @PostMapping
     public ResponseEntity<Experience> createExperience(@Valid @RequestBody ExperienceDTO experienceDTO) {
         Experience createdExperience = experienceService.createExperience(experienceDTO);

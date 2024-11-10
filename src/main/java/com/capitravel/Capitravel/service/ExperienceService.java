@@ -11,6 +11,8 @@ public interface ExperienceService {
 
     Experience getExperienceById(Long id);
 
+    List<Experience> getExperiencesByCategories(Long categoryId);
+
     Experience createExperience(ExperienceDTO experience);
 
     Experience updateExperience(Long id, ExperienceDTO updatedExperience);
