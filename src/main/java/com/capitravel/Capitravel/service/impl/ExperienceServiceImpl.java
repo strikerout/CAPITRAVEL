@@ -9,6 +9,7 @@ import com.capitravel.Capitravel.model.Property;
 import com.capitravel.Capitravel.repository.CategoryRepository;
 import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.repository.PropertyRepository;
+import com.capitravel.Capitravel.service.CategoryService;
 import com.capitravel.Capitravel.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class ExperienceServiceImpl implements ExperienceService {
     public static final String PROPERTIES_FIELD_NAME = "Properties";
 
     @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
     private ExperienceRepository experienceRepository;
 
     @Autowired
@@ -43,6 +47,12 @@ public class ExperienceServiceImpl implements ExperienceService {
     @Override
     public Experience getExperienceById(Long id) {
         return experienceRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Experience> getExperiencesByCategories(Long categoryId){
+        Category categoryById = categoryService.getCategoryById(categoryId);
+        return experienceRepository.findByCategoryId(categoryId);
     }
 
     @Override
