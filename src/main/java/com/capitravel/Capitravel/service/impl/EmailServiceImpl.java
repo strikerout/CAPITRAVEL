@@ -27,14 +27,14 @@ public class EmailServiceImpl implements EmailService {
 
     public void sendConfirmationEmail(User user) {
         if (user != null) {
-            String confirmationLink = "http://capitravel.com/confirmar?";
-            String body = "<h1>Bienvenido a CapiTravel</h1>"
-                    + "<p>Nombre: " + user.getName() + "</p>"
+            String confirmationLink = "http://localhost:5173//login?";
+            String body = "<h1>Welcome to CapiTravel</h1>"
+                    + "<p>Name: " + user.getName() + "</p>"
                     + "<p>Email: " + user.getEmail() + "</p>"
-                    + "<p>Por favor, haz clic en el siguiente enlace para logearte a tu cuenta:</p>"
+                    + "<p>Please, click the following link to login to your account:</p>"
                     + "<a href='" + confirmationLink + "'>Login</a>";
             try {
-                sendEmail(user.getEmail(), "Confirma tu cuenta", body);
+                sendEmail(user.getEmail(), "Welcome from Capi", body);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
