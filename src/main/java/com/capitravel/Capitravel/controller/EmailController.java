@@ -20,7 +20,7 @@ public class EmailController {
         this.userService = userService;
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<Void> resendEmail(@PathVariable Long id) {
         User foundUser = userService.getUserByID(id);
         emailService.sendConfirmationEmail(foundUser);
