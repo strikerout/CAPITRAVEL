@@ -20,8 +20,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeRoles() {
-        createRoleIfNotFound("USER");
-        createRoleIfNotFound("ADMIN");
+        createRoleIfNotFound("ROLE_USER");
+        createRoleIfNotFound("ROLE_ADMIN");
     }
 
     private void createRoleIfNotFound(String roleName) {
