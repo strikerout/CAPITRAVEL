@@ -14,7 +14,4 @@ public class Category {
 
     private String name;
     private String description;
-
-    @Lob
-    private String image;
 }

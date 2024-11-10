@@ -48,7 +48,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
-        category.setImage(categoryDTO.getImage());
 
         if(categoryExistsByName(category.getName()).isEmpty()){
             return categoryRepository.save(category);
@@ -74,7 +73,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category updatedCategory = existingCategory.get();
         updatedCategory.setName(categoryDTO.getName());
         updatedCategory.setDescription(categoryDTO.getDescription());
-        updatedCategory.setImage(categoryDTO.getImage());
 
         return categoryRepository.save(updatedCategory);
     }
