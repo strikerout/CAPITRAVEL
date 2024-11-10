@@ -26,5 +26,4 @@ public class EmailController {
         emailService.sendConfirmationEmail(foundUser);
         return ResponseEntity.noContent().build();
     }
-
 }
