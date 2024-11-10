@@ -18,8 +18,4 @@ public class CategoryDTO {
     @Size(min= 15,max = 256, message = "Description must be between 15 and 256 characters")
     @JsonDeserialize(using = TrimmingStringDeserializer.class)
     private String description;
-
-    @NotBlank(message = "Image is required")
-    @JsonDeserialize(using = TrimmingStringDeserializer.class)
-    private String image;
 }
