@@ -23,7 +23,7 @@ public class EmailController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> resendEmail(@PathVariable Long id) {
         User foundUser = userService.getUserByID(id);
-        emailService.sendConfirmationEmail(foundUser.getEmail());
+        emailService.sendConfirmationEmail(foundUser);
         return ResponseEntity.noContent().build();
     }
 
