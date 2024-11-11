@@ -1,6 +1,5 @@
 package com.capitravel.Capitravel.service.impl;
 
-import com.capitravel.Capitravel.model.User;
 import com.capitravel.Capitravel.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -25,19 +24,17 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(message);
     }
 
-    public void sendConfirmationEmail(User user) {
-        if (user != null) {
-            String confirmationLink = "http://localhost:5173//login?";
-            String body = "<h1>Welcome to CapiTravel</h1>"
-                    + "<p>Name: " + user.getName() + "</p>"
-                    + "<p>Email: " + user.getEmail() + "</p>"
-                    + "<p>Please, click the following link to login to your account:</p>"
-                    + "<a href='" + confirmationLink + "'>Login</a>";
-            try {
-                sendEmail(user.getEmail(), "Welcome from Capi", body);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
+    public void sendConfirmationEmail(String email, String name, String lastName) {
+        String confirmationLink = "http://localhost:5173//login?";
+        String body = "<h1>Welcome to CapiTravel</h1>"
+                + "<p>Name: " + name + " " + lastName + "</p>"
+                + "<p>Email: " + email + "</p>"
+                + "<p>Please, click the following link to login to your account:</p>"
+                + "<a href='" + confirmationLink + "'>Login</a>";
+        try {
+            sendEmail(email, "Welcome from Capi", body);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
     }
 }
