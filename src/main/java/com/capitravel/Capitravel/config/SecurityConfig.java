@@ -1,6 +1,8 @@
 package com.capitravel.Capitravel.config;
 
 import com.capitravel.Capitravel.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +12,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import com.capitravel.Capitravel.service.impl.CustomUserDetailsService;
@@ -47,6 +51,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/emails/**").permitAll()
                         .anyRequest().hasRole(USER)
                 )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(unauthorizedEntryPoint())
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -67,5 +74,15 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder());
 
         return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint unauthorizedEntryPoint() {
+        return (HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Unauthorized access - You don't have permission to access this resource.\"}");
+            response.getWriter().flush();
+        };
     }
 }
