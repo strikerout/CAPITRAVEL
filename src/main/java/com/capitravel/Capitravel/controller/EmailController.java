@@ -1,8 +1,6 @@
 package com.capitravel.Capitravel.controller;
 
-import com.capitravel.Capitravel.model.User;
 import com.capitravel.Capitravel.service.EmailService;
-import com.capitravel.Capitravel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,18 +10,15 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
 
     private final EmailService emailService;
-    private final UserService userService;
 
     @Autowired
-    public EmailController(EmailService emailService, UserService userService) {
+    public EmailController(EmailService emailService) {
         this.emailService = emailService;
-        this.userService = userService;
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Void> resendEmail(@PathVariable Long id) {
-        User foundUser = userService.getUserByID(id);
-        emailService.sendConfirmationEmail(foundUser);
+    @PostMapping
+    public ResponseEntity<Void> resendEmail(@RequestParam String email, @RequestParam String name, @RequestParam String lastName) {
+        emailService.sendConfirmationEmail(email, name, lastName);
         return ResponseEntity.noContent().build();
     }
 }
