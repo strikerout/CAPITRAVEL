@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PUT, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/emails**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/emails/**").permitAll()
                         .anyRequest().hasRole(USER)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
