@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -67,8 +68,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({ BadCredentialsException.class })
-    public ResponseEntity<String> handleBadCredentialsException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException(Exception ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Invalid username or password");
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
