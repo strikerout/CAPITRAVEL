@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
 
         User savedUser = userRepository.save(user);
-        emailService.sendConfirmationEmail(savedUser);
+        emailService.sendConfirmationEmail(user.getEmail(), user.getName(),user.getLastName());
         return savedUser;
     }
 
