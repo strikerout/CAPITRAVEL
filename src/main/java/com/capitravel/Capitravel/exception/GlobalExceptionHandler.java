@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,5 +69,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ BadCredentialsException.class })
     public ResponseEntity<String> handleBadCredentialsException(Exception ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        Map<String, String> error = new HashMap<>();
+
+        String paramName = ex.getName();
+        String expectedType = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "expected value";
+
+        error.put("error", "Invalid format for parameter '" + paramName + "'. Expected a " + expectedType + ".");
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
