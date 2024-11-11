@@ -11,7 +11,7 @@ import java.util.List;
 public class ExperienceDTO {
 
     @NotBlank(message = "Title is required")
-    @Size(min = 3, max = 32, message = "Title must be between 10 and 128 characters")
+    @Size(min = 3, max = 32, message = "Title must be between 3 and 32 characters")
     @JsonDeserialize(using = TrimmingStringDeserializer.class)
     private String title;
 
