@@ -14,6 +14,4 @@ public interface UserService {
     void addRoleToUser(String username, String roleName);
 
     User getUser(String username);
-
-    User getUserByID(Long id);
 }
