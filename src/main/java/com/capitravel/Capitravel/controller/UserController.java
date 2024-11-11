@@ -38,8 +38,8 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping("/role")
-    public ResponseEntity<Void> addRoleToUser(@RequestParam String email, @RequestParam String roleName) {
+    @PostMapping("/role/{email}")
+    public ResponseEntity<Void> addRoleToUser(@PathVariable String email, @RequestParam String roleName) {
         userService.addRoleToUser(email, roleName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
