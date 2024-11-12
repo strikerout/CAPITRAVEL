@@ -20,20 +20,19 @@ public class ExperienceController {
     @Autowired
     private ExperienceService experienceService;
 
-    @GetMapping
-    public List<Experience> getAllExperiences() {
-        return experienceService.getAllExperiences();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Experience> getExperienceById(@PathVariable Long id) {
         Experience experience = experienceService.getExperienceById(id);
         return experience != null ? ResponseEntity.ok(experience) : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/by-category/{categoryId}")
-    public List<Experience>getExperiencesByCategories(@PathVariable Long categoryId) {
-        return experienceService.getExperiencesByCategories(categoryId);
+    @GetMapping
+    public List<Experience> getExperiences(@RequestParam(required = false) List<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return experienceService.getAllExperiences();
+        } else {
+            return experienceService.getExperiencesByCategories(categoryIds);
+        }
     }
 
     @PostMapping

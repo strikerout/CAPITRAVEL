@@ -14,10 +14,7 @@ import com.capitravel.Capitravel.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -50,9 +47,23 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public List<Experience> getExperiencesByCategories(Long categoryId){
-        Category categoryById = categoryService.getCategoryById(categoryId);
-        return experienceRepository.findByCategoryId(categoryId);
+    public List<Experience> getExperiencesByCategories(List<Long> categoryIds) {
+        List<Long> validCategoryIds = new ArrayList<>();
+        List<Long> notFoundCategoryIds = new ArrayList<>();
+
+        for (Long categoryId : categoryIds) {
+            try {
+                categoryService.getCategoryById(categoryId);
+                validCategoryIds.add(categoryId);
+            } catch (Exception e) {
+                notFoundCategoryIds.add(categoryId);
+            }
+        }
+        if (!notFoundCategoryIds.isEmpty()) {
+            throw new ResourceNotFoundException("Categories not found: " + notFoundCategoryIds);
+        }
+        Long categoryCount = (long) validCategoryIds.size();
+        return experienceRepository.findByCategoryIds(validCategoryIds, categoryCount);
     }
 
     @Override
