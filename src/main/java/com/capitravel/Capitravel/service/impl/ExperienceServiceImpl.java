@@ -50,18 +50,20 @@ public class ExperienceServiceImpl implements ExperienceService {
     public List<Experience> getExperiencesByCategories(List<Long> categoryIds) {
         List<Long> validCategoryIds = new ArrayList<>();
         List<Long> notFoundCategoryIds = new ArrayList<>();
+
         for (Long categoryId : categoryIds) {
             try {
                 categoryService.getCategoryById(categoryId);
                 validCategoryIds.add(categoryId);
-            } catch (Exception ex) {
+            } catch (Exception e) {
                 notFoundCategoryIds.add(categoryId);
             }
         }
         if (!notFoundCategoryIds.isEmpty()) {
             throw new ResourceNotFoundException("Categories not found: " + notFoundCategoryIds);
         }
-        return experienceRepository.findByCategoryIds(validCategoryIds);
+        Long categoryCount = (long) validCategoryIds.size();
+        return experienceRepository.findByCategoryIds(validCategoryIds, categoryCount);
     }
 
     @Override
