@@ -4,7 +4,7 @@ import jakarta.mail.MessagingException;
 
 public interface EmailService {
 
-    void sendEmail(String to, String subject, String body) throws MessagingException;
+    void sendEmail(String to, String subject, String body, boolean isHtml, String imagePath, String imageId) throws MessagingException;
 
     void sendConfirmationEmail(String email, String name, String lastName);
 }

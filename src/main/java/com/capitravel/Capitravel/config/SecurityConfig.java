@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.POST, "/emails/**").permitAll()
+                        .requestMatchers("/static/**").permitAll()
                         .anyRequest().hasRole(USER)
                 )
                 .exceptionHandling(exception -> exception
