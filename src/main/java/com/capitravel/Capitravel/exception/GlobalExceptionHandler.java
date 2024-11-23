@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,5 +85,13 @@ public class GlobalExceptionHandler {
         error.put("error", "Invalid format for parameter '" + paramName + "'. Expected a " + expectedType + ".");
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<Map<String, String>> handleDateTimeParseException(DateTimeParseException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid date format, should be yyyy-MM-dd or yyyy-MM-ddTHH-mm");
+        response.put("details", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
     }
 }

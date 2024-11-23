@@ -5,11 +5,16 @@ import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.service.ExperienceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,11 +32,23 @@ public class ExperienceController {
     }
 
     @GetMapping
-    public List<Experience> getExperiences(@RequestParam(required = false) List<Long> categoryIds) {
-        if (categoryIds == null || categoryIds.isEmpty()) {
-            return experienceService.getAllExperiences();
-        } else {
+    public List<Experience> getExperiences(
+            @RequestParam(required = false) List<Long> categoryIds,
+            @RequestParam(required = false) String keywords,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+
+        LocalDateTime startDateTime = parseToLocalDateTime(startDate, true);
+        LocalDateTime endDateTime = parseToLocalDateTime(endDate, false);
+
+        if (categoryIds != null && !categoryIds.isEmpty()) {
             return experienceService.getExperiencesByCategories(categoryIds);
+        } else if (keywords != null || country != null || city != null || (startDate != null && endDate != null)) {
+            return experienceService.searchExperiences(keywords, country, city, startDateTime, endDateTime);
+        } else {
+            return experienceService.getAllExperiences();
         }
     }
 
@@ -52,4 +69,20 @@ public class ExperienceController {
         experienceService.deleteExperience(id);
         return ResponseEntity.noContent().build();
     }
+
+    private LocalDateTime parseToLocalDateTime(String dateStr, boolean isStart) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+
+        try {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            return LocalDateTime.parse(dateStr, dateTimeFormatter);
+        } catch (Exception e) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime date = LocalDate.parse(dateStr, dateFormatter).atStartOfDay();
+            return isStart ? date : date.plusHours(23).plusMinutes(59);
+        }
+    }
+
 }
