@@ -1,6 +1,7 @@
 package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.dto.ExperienceDTO;
+import com.capitravel.Capitravel.dto.ReservationDatesDTO;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Category;
@@ -11,9 +12,11 @@ import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.repository.PropertyRepository;
 import com.capitravel.Capitravel.service.CategoryService;
 import com.capitravel.Capitravel.service.ExperienceService;
+import com.capitravel.Capitravel.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -35,6 +38,9 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Autowired
     private PropertyRepository propertyRepository;
+
+    @Autowired
+    private ReservationService reservationService;
 
     @Override
     public List<Experience> getAllExperiences() {
@@ -64,6 +70,42 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
         Long categoryCount = (long) validCategoryIds.size();
         return experienceRepository.findByCategoryIds(validCategoryIds, categoryCount);
+    }
+
+    @Override
+    public List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Experience> experiences = experienceRepository.findAll();
+
+        if (keywords != null && !keywords.isEmpty()) {
+            List<String> keywordList = Arrays.asList(keywords.toLowerCase().split(" "));
+
+            experiences = experiences.stream()
+                    .filter(exp -> {
+                        String title = exp.getTitle().toLowerCase();
+                        boolean titleMatches = keywordList.stream().anyMatch(title::contains);
+
+                        boolean propertyMatches = exp.getProperties().stream()
+                                .anyMatch(prop -> keywordList.stream()
+                                        .anyMatch(keyword -> prop.getName().toLowerCase().contains(keyword)));
+
+                        return titleMatches || propertyMatches;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        if (country != null && !country.isEmpty()) {
+            experiences = experiences.stream()
+                    .filter(exp -> exp.getCountry().toLowerCase().contains(country.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        if (startDate != null && endDate != null) {
+            experiences = experiences.stream()
+                    .filter(exp -> isAvailable(exp.getId(), startDate, endDate))
+                    .collect(Collectors.toList());
+        }
+
+        return experiences;
     }
 
     @Override
@@ -160,5 +202,16 @@ public class ExperienceServiceImpl implements ExperienceService {
     private double getRandomReputation() {
         double randomValue = ThreadLocalRandom.current().nextDouble(1.0, 5.0);
         return Math.round(randomValue * 10.0) / 10.0;
+    }
+
+    private boolean isAvailable(Long experienceId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<ReservationDatesDTO> reservationDates = reservationService.getReservationsByExperience(experienceId);
+
+        for (ReservationDatesDTO reservation : reservationDates) {
+            if (!(endDate.isBefore(reservation.getCheckIn()) || startDate.isAfter(reservation.getCheckOut()))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
