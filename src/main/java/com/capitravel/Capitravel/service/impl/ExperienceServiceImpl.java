@@ -91,10 +91,13 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setUbication(experienceDTO.getUbication());
         experience.setDescription(experienceDTO.getDescription());
         experience.setImages(experienceDTO.getImages());
-        experience.setDuration(experienceDTO.getDuration());
+        experience.setQuantity(experienceDTO.getQuantity());
+        experience.setTimeUnit(experienceDTO.getTimeUnit());
         experience.setCategories(categories);
         experience.setProperties(properties);
         experience.setReputation(getRandomReputation());
+        experience.setServiceHours(experienceDTO.getServiceHours());
+        experience.setAvailableDays(experienceDTO.getAvailableDays());
 
         return experienceRepository.save(experience);
     }
@@ -127,9 +130,12 @@ public class ExperienceServiceImpl implements ExperienceService {
         existingExperience.setUbication(updatedExperienceDTO.getUbication());
         existingExperience.setDescription(updatedExperienceDTO.getDescription());
         existingExperience.setImages(updatedExperienceDTO.getImages());
-        existingExperience.setDuration(updatedExperienceDTO.getDuration());
+        existingExperience.setQuantity(updatedExperienceDTO.getQuantity());
+        existingExperience.setTimeUnit(updatedExperienceDTO.getTimeUnit());
         existingExperience.setCategories(categories);
         existingExperience.setProperties(properties);
+        existingExperience.setServiceHours(updatedExperienceDTO.getServiceHours());
+        existingExperience.setAvailableDays(updatedExperienceDTO.getAvailableDays());
 
         return experienceRepository.save(existingExperience);
     }
