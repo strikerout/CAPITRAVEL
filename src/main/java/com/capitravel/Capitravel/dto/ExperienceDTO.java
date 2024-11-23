@@ -2,9 +2,6 @@ package com.capitravel.Capitravel.dto;
 
 import com.capitravel.Capitravel.util.TrimmingStringDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 

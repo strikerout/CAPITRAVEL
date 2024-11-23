@@ -42,12 +42,9 @@ public class Experience {
     )
 
     private List<Property> properties;
-
-
     private String serviceHours;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> availableDays;
-
 }
