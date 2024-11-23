@@ -3,6 +3,7 @@ package com.capitravel.Capitravel.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 @Data
@@ -17,7 +18,8 @@ public class Experience {
     private String country;
     private String ubication;
     private String description;
-    private Integer duration;
+    private Integer quantity;
+    private String timeUnit;
     private double reputation;
 
     @Lob
@@ -40,5 +42,12 @@ public class Experience {
     )
 
     private List<Property> properties;
+
+
+    private String serviceHours;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private List<DayOfWeek> availableDays;
 
 }

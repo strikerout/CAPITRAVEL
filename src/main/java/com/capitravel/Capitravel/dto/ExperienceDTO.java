@@ -2,9 +2,13 @@ package com.capitravel.Capitravel.dto;
 
 import com.capitravel.Capitravel.util.TrimmingStringDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 @Data
@@ -30,9 +34,13 @@ public class ExperienceDTO {
     @JsonDeserialize(using = TrimmingStringDeserializer.class)
     private String description;
 
-    @NotNull(message = "Duration is required")
-    @Min(value = 1, message = "Duration must be at least 1 minute")
-    private Integer duration;
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
+    private Integer quantity;
+
+    @NotBlank(message = "Time unit is required")
+    @Pattern(regexp = "^(?i)(minutes|hours|days)$", message = "Time unit must be one of: Minutes, Hours, Days")
+    private String timeUnit;
 
     @NotEmpty(message = "Images cannot be empty")
     private List<@NotBlank(message = "Images cannot be blank") String> images;
@@ -41,4 +49,14 @@ public class ExperienceDTO {
     private List<Long> categoryIds;
 
     private List<Long> propertyIds;
+
+    @NotBlank(message = "Service hours are required")
+    @Pattern(
+            regexp = "^([01]\\d|2[0-3]):[0-5]\\d-([01]\\d|2[0-3]):[0-5]\\d$",
+            message = "Service hours must be in the format HH:mm-HH:mm (e.g., 09:00-18:00)"
+    )
+    private String serviceHours;
+
+    @NotEmpty(message = "Available days are required")
+    private List<DayOfWeek> availableDays;
 }
