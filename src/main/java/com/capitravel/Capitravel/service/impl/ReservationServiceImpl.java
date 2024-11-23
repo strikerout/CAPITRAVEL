@@ -40,8 +40,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation createReservation(ReservationDTO reservationDTO) {
-        User user = userRepository.findById(reservationDTO.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + reservationDTO.getUserId()));
+        User user = userRepository.findByEmail(reservationDTO.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + reservationDTO.getEmail()));
 
         Experience experience = experienceRepository.findById(reservationDTO.getExperienceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with ID: " + reservationDTO.getExperienceId()));
