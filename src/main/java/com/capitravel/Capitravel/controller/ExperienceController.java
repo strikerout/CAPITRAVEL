@@ -36,7 +36,6 @@ public class ExperienceController {
             @RequestParam(required = false) List<Long> categoryIds,
             @RequestParam(required = false) String keywords,
             @RequestParam(required = false) String country,
-            @RequestParam(required = false) String city,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate) {
 
@@ -45,8 +44,8 @@ public class ExperienceController {
 
         if (categoryIds != null && !categoryIds.isEmpty()) {
             return experienceService.getExperiencesByCategories(categoryIds);
-        } else if (keywords != null || country != null || city != null || (startDate != null && endDate != null)) {
-            return experienceService.searchExperiences(keywords, country, city, startDateTime, endDateTime);
+        } else if (keywords != null || country != null || (startDate != null && endDate != null)) {
+            return experienceService.searchExperiences(keywords, country, startDateTime, endDateTime);
         } else {
             return experienceService.getAllExperiences();
         }

@@ -73,26 +73,29 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public List<Experience> searchExperiences(String keywords, String country, String city, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate) {
         List<Experience> experiences = experienceRepository.findAll();
 
         if (keywords != null && !keywords.isEmpty()) {
+            List<String> keywordList = Arrays.asList(keywords.toLowerCase().split(" "));
+
             experiences = experiences.stream()
-                    .filter(exp -> exp.getTitle().toLowerCase().contains(keywords.toLowerCase())
-                            || exp.getProperties().stream()
-                            .anyMatch(prop -> prop.getName().toLowerCase().contains(keywords.toLowerCase())))
+                    .filter(exp -> {
+                        String title = exp.getTitle().toLowerCase();
+                        boolean titleMatches = keywordList.stream().anyMatch(title::contains);
+
+                        boolean propertyMatches = exp.getProperties().stream()
+                                .anyMatch(prop -> keywordList.stream()
+                                        .anyMatch(keyword -> prop.getName().toLowerCase().contains(keyword)));
+
+                        return titleMatches || propertyMatches;
+                    })
                     .collect(Collectors.toList());
         }
 
         if (country != null && !country.isEmpty()) {
             experiences = experiences.stream()
-                    .filter(exp -> exp.getCountry().equalsIgnoreCase(country))
-                    .collect(Collectors.toList());
-        }
-
-        if (city != null && !city.isEmpty()) {
-            experiences = experiences.stream()
-                    .filter(exp -> exp.getUbication().equalsIgnoreCase(city))
+                    .filter(exp -> exp.getCountry().toLowerCase().contains(country.toLowerCase()))
                     .collect(Collectors.toList());
         }
 
@@ -104,6 +107,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
         return experiences;
     }
+
 
     @Override
     public Experience createExperience(ExperienceDTO experienceDTO) {

@@ -21,5 +21,5 @@ public interface ExperienceService {
 
     void deleteExperience(Long id);
 
-    List<Experience> searchExperiences(String keywords, String country, String city, LocalDateTime startDate, LocalDateTime endDate);
+    List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate);
 }
