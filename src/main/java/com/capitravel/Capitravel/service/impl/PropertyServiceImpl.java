@@ -29,13 +29,8 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property getPropertyById(Long id) {
-        Property property = propertyRepository.findById(id).orElse(null);
-
-        if(property != null){
-            return property;
-        }
-
-        throw new ResourceNotFoundException("Property for id: " + id + " not found.");
+        return propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(("Property for id: " + id + " not found.")));
     }
 
     @Override
