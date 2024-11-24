@@ -45,14 +45,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/favorites")
-    public ResponseEntity<Set<Long>> toggleFavorite(@RequestParam String email, @RequestParam Long experienceId) {
+    @PostMapping("/favorites/{email}")
+    public ResponseEntity<Set<Long>> toggleFavorite(@PathVariable String email, @RequestParam Long experienceId) {
         Set<Long> favoritesUpdated = userService.toggleFavorite(email, experienceId);
         return new ResponseEntity<>(favoritesUpdated , HttpStatus.OK);
     }
 
-    @GetMapping("/favorites")
-    public List<Long> listFavorites(@RequestParam String email) {
+    @GetMapping("/favorites/{email}")
+    public List<Long> listFavorites(@PathVariable String email) {
         return userService.listFavorites(email);
     }
 
