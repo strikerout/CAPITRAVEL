@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -48,7 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/register", "/auth/login", "/loginError", "/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**", "/reservations/**").hasAnyRole(ADMIN, USER)
-                        .requestMatchers(HttpMethod.POST, "/reservations/**").hasAnyRole(ADMIN, USER)
+                        .requestMatchers(HttpMethod.POST, "/reservations/**", "/favorites/**", "/users/favorites/**").hasAnyRole(ADMIN, USER)
                         .requestMatchers(HttpMethod.POST, "/users/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.GET, "/categories/**", "/experiences/**", "/properties/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
