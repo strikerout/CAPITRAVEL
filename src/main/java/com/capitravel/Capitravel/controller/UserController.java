@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -42,5 +43,15 @@ public class UserController {
     public ResponseEntity<Void> addRoleToUser(@PathVariable String email, @RequestParam String roleName) {
         userService.addRoleToUser(email, roleName);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{email}/favorites")
+    public Set<Long> toggleFavorite(@PathVariable String email, @RequestParam Long experienceId) {
+        return userService.toggleFavorite(email, experienceId);
+    }
+
+    @GetMapping("/{email}/favorites")
+    public List<Long> listFavorites(@PathVariable String email) {
+        return userService.listFavorites(email);
     }
 }

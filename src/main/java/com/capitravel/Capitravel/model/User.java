@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 public class User {
@@ -28,4 +31,9 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @ElementCollection
+    @CollectionTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "experience_id")
+    private Set<Long> favoriteExperienceIds = new HashSet<>();
 }
