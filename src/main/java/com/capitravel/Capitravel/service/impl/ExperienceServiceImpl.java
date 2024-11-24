@@ -73,6 +73,19 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
+    public List<String> getCountrysFromExperiences() {
+        List<Experience> experiences = experienceRepository.findAll();
+
+        return experiences.stream()
+                .map(Experience::getCountry)
+                .filter(Objects::nonNull)
+                .map(country -> country.trim().toLowerCase())
+                .distinct()
+                .map(this::capitalizeEachWord)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate) {
         List<Experience> experiences = experienceRepository.findAll();
 
@@ -213,5 +226,12 @@ public class ExperienceServiceImpl implements ExperienceService {
             }
         }
         return true;
+    }
+
+    private String capitalizeEachWord(String country) {
+        return Arrays.stream(country.split(" "))
+                .filter(word -> !word.isEmpty())
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
     }
 }

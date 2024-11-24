@@ -51,6 +51,11 @@ public class ExperienceController {
         }
     }
 
+    @GetMapping("/countrys")
+    public List<String> getCountrysFromExperiences() {
+        return experienceService.getCountrysFromExperiences();
+    }
+
     @PostMapping
     public ResponseEntity<Experience> createExperience(@Valid @RequestBody ExperienceDTO experienceDTO) {
         Experience createdExperience = experienceService.createExperience(experienceDTO);
