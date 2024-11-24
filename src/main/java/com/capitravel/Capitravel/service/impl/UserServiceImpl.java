@@ -3,7 +3,6 @@ package com.capitravel.Capitravel.service.impl;
 import com.capitravel.Capitravel.dto.UserDTO;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
-import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.model.Role;
 import com.capitravel.Capitravel.model.User;
 import com.capitravel.Capitravel.repository.ExperienceRepository;
@@ -13,7 +12,6 @@ import com.capitravel.Capitravel.service.EmailService;
 import com.capitravel.Capitravel.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
