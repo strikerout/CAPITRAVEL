@@ -29,15 +29,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = getJwtFromRequest(request);
 
-        if (token != null && jwtTokenUtil.validateToken(token)) {
-            String username = jwtTokenUtil.getUsernameFromToken(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (token != null && jwtTokenUtil.validateToken(token)) {
+                String username = jwtTokenUtil.getUsernameFromToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token is invalid or expired\"}");
         }
-        filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

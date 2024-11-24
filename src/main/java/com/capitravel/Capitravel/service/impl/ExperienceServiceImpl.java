@@ -49,7 +49,8 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Override
     public Experience getExperienceById(Long id) {
-        return experienceRepository.findById(id).orElse(null);
+        return experienceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience with id: " + id + " not found"));
     }
 
     @Override
