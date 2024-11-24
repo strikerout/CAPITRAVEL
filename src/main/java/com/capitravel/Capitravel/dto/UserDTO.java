@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserDTO {
 
@@ -30,4 +32,6 @@ public class UserDTO {
             message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     )
     private String password;
+
+    private List<Long> favoriteExperienceIds;
 }

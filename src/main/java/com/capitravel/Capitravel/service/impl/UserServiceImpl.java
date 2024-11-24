@@ -5,6 +5,7 @@ import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.Role;
 import com.capitravel.Capitravel.model.User;
+import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.repository.RoleRepository;
 import com.capitravel.Capitravel.repository.UserRepository;
 import com.capitravel.Capitravel.service.EmailService;
@@ -14,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -33,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ExperienceRepository experienceRepository;
 
     @Override
     public List<User> getAllUsers() {
@@ -77,5 +80,31 @@ public class UserServiceImpl implements UserService {
     public User getUser(String username) {
         return userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+    }
+
+    @Override
+    public Set<Long> toggleFavorite(String username, Long experienceId) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+
+        experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + experienceId));
+
+        if (user.getFavoriteExperienceIds().contains(experienceId)) {
+            user.getFavoriteExperienceIds().remove(experienceId);
+        } else {
+            user.getFavoriteExperienceIds().add(experienceId);
+        }
+
+        userRepository.save(user);
+        return user.getFavoriteExperienceIds();
+    }
+
+    @Override
+    public List<Long> listFavorites(String username) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return new ArrayList<>(user.getFavoriteExperienceIds());
     }
 }
