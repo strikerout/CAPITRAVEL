@@ -51,9 +51,9 @@ public class ExperienceController {
         }
     }
 
-    @GetMapping("/countrys")
-    public List<String> getCountrysFromExperiences() {
-        return experienceService.getCountrysFromExperiences();
+    @GetMapping("/countries")
+    public List<String> getCountriesFromExperiences() {
+        return experienceService.getCountriesFromExperiences();
     }
 
     @PostMapping

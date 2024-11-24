@@ -73,7 +73,7 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public List<String> getCountrysFromExperiences() {
+    public List<String> getCountriesFromExperiences() {
         List<Experience> experiences = experienceRepository.findAll();
 
         return experiences.stream()

@@ -15,7 +15,7 @@ public interface ExperienceService {
 
     List<Experience> getExperiencesByCategories(List<Long> categoryIds);
 
-    List<String> getCountrysFromExperiences();
+    List<String> getCountriesFromExperiences();
 
     Experience createExperience(ExperienceDTO experience);
 
