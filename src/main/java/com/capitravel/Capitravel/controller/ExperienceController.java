@@ -54,11 +54,9 @@ public class ExperienceController {
         return experienceService.getCountriesFromExperiences();
     }
 
-
     @GetMapping("/favorites")
     public List<Experience> getFavorites(@RequestParam List<Long> experienceIdList){
         return experienceService.getFavoritesExperiences(experienceIdList);
-
     }
 
     @PostMapping

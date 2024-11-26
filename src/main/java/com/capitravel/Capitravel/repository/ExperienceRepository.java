@@ -18,7 +18,4 @@ public interface ExperienceRepository extends JpaRepository<Experience, Long> {
 
     @Query("SELECT e FROM Experience e JOIN e.categories c WHERE c.id IN :categoryIds GROUP BY e.id HAVING COUNT(c.id) = :categoryCount")
     List<Experience> findByCategoryIds(@Param("categoryIds") List<Long> categoryIds, @Param("categoryCount") Long categoryCount);
-
-
-
 }
