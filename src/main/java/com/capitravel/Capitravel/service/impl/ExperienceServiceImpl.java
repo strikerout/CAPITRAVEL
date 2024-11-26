@@ -235,4 +235,9 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
                 .collect(Collectors.joining(" "));
     }
+
+    @Override
+    public List<Experience> getFavoritesExperiences(List<Long> experienceIdList) {
+        return experienceRepository.findAllById(experienceIdList);
+    }
 }
