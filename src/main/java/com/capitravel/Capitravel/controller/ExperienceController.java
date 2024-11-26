@@ -54,6 +54,13 @@ public class ExperienceController {
         return experienceService.getCountriesFromExperiences();
     }
 
+
+    @GetMapping("/favorites")
+    public List<Experience> getFavorites(@RequestParam List<Long> experienceIdList){
+        return experienceService.getFavoritesExperiences(experienceIdList);
+
+    }
+
     @PostMapping
     public ResponseEntity<Experience> createExperience(@Valid @RequestBody ExperienceDTO experienceDTO) {
         Experience createdExperience = experienceService.createExperience(experienceDTO);
@@ -85,11 +92,5 @@ public class ExperienceController {
             LocalDateTime date = LocalDate.parse(dateStr, dateFormatter).atStartOfDay();
             return isStart ? date : date.plusHours(23).plusMinutes(59);
         }
-    }
-
-    @GetMapping("/favorites")
-    private List<Experience> getFavorites (@RequestParam List<Long> experienceIdList){
-       return experienceService.getFavoritesExperiences(experienceIdList);
-
     }
 }
