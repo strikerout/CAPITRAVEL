@@ -4,7 +4,6 @@ import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.model.Experience;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 public interface ExperienceService {
@@ -24,4 +23,6 @@ public interface ExperienceService {
     void deleteExperience(Long id);
 
     List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate);
+
+    List<Experience> getFavoritesExperiences(List<Long> experienceIdList);
 }

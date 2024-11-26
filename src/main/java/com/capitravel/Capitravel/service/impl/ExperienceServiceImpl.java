@@ -87,6 +87,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
+    public List<Experience> getFavoritesExperiences(List<Long> experienceIdList) {
+        return experienceRepository.findAllById(experienceIdList);
+    }
+
+    @Override
     public List<Experience> searchExperiences(String keywords, String country, LocalDateTime startDate, LocalDateTime endDate) {
         List<Experience> experiences = experienceRepository.findAll();
 

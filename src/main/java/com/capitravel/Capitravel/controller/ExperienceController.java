@@ -5,7 +5,6 @@ import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.service.ExperienceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -56,6 +54,11 @@ public class ExperienceController {
         return experienceService.getCountriesFromExperiences();
     }
 
+    @GetMapping("/favorites")
+    public List<Experience> getFavorites(@RequestParam List<Long> experienceIdList){
+        return experienceService.getFavoritesExperiences(experienceIdList);
+    }
+
     @PostMapping
     public ResponseEntity<Experience> createExperience(@Valid @RequestBody ExperienceDTO experienceDTO) {
         Experience createdExperience = experienceService.createExperience(experienceDTO);
@@ -88,5 +91,4 @@ public class ExperienceController {
             return isStart ? date : date.plusHours(23).plusMinutes(59);
         }
     }
-
 }
