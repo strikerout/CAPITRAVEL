@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 public class UserExperienceReview {
 
+    private String name;
+    private String lastname;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +30,5 @@ public class UserExperienceReview {
     private double rating;
 
     private String reviewMessage;
-
     private LocalDateTime createdAt = LocalDateTime.now();
 }
