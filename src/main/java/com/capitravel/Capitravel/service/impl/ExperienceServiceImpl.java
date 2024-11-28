@@ -222,6 +222,9 @@ public class ExperienceServiceImpl implements ExperienceService {
         Experience experience = experienceRepository.findById(experienceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
 
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         boolean alreadyRated = userExperienceReviewRepository.existsByEmailAndExperienceId(email, experienceId);
         if (alreadyRated) {
             throw new DuplicatedResourceException("User has already rated this experience");
@@ -236,6 +239,8 @@ public class ExperienceServiceImpl implements ExperienceService {
         experienceRepository.save(experience);
 
         UserExperienceReview userExperienceReview = new UserExperienceReview();
+        userExperienceReview.setName(user.getName());
+        userExperienceReview.setLastname(user.getLastName());
         userExperienceReview.setEmail(email);
         userExperienceReview.setExperience(experience);
         userExperienceReview.setRating(Math.round(newRating * 10) / 10.0);
