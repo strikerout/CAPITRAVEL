@@ -46,10 +46,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/register", "/auth/login", "/loginError", "/logout").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories/**", "/experiences/**", "/properties/**", "/experiences/reputation/*", "/reservations/experience/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**", "/reservations/**", "/experiences/favorites/**", "experiences/reputation/*/*").hasAnyRole(ADMIN, USER)
                         .requestMatchers(HttpMethod.POST, "/reservations/**", "/favorites/**", "/users/favorites/**", "experiences/reputation/**").hasAnyRole(ADMIN, USER)
                         .requestMatchers(HttpMethod.POST, "/users/**").hasRole(ADMIN)
-                        .requestMatchers(HttpMethod.GET, "/categories/**", "/experiences/**", "/properties/**", "/experiences/reputation/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PUT, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/categories/**", "/experiences/**", "/properties/**").hasRole(ADMIN)
