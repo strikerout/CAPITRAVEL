@@ -1,5 +1,6 @@
 package com.capitravel.Capitravel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,6 +22,9 @@ public class Experience {
     private Integer quantity;
     private String timeUnit;
     private double reputation;
+
+    @JsonIgnore
+    private int ratingCount = 1;
 
     @Lob
     @ElementCollection

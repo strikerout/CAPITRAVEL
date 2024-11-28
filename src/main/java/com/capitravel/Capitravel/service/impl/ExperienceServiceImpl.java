@@ -4,12 +4,8 @@ import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.dto.ReservationDatesDTO;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
-import com.capitravel.Capitravel.model.Category;
-import com.capitravel.Capitravel.model.Experience;
-import com.capitravel.Capitravel.model.Property;
-import com.capitravel.Capitravel.repository.CategoryRepository;
-import com.capitravel.Capitravel.repository.ExperienceRepository;
-import com.capitravel.Capitravel.repository.PropertyRepository;
+import com.capitravel.Capitravel.model.*;
+import com.capitravel.Capitravel.repository.*;
 import com.capitravel.Capitravel.service.CategoryService;
 import com.capitravel.Capitravel.service.ExperienceService;
 import com.capitravel.Capitravel.service.ReservationService;
@@ -41,6 +37,12 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     @Autowired
     private ReservationService reservationService;
+
+    @Autowired
+    private UserExperienceReviewRepository userExperienceReviewRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Experience> getAllExperiences() {
@@ -209,6 +211,64 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new ResourceNotFoundException("The Experience for id: " + id + " was not found.");
         }
         experienceRepository.deleteById(id);
+    }
+
+    @Override
+    public UserExperienceReview reviewExperience(Long experienceId, String email, double newRating, String review) {
+        if (newRating < 1.0 || newRating > 5.0 || (newRating * 2) % 1 != 0) {
+            throw new IllegalArgumentException("Rating must be between 1.0 and 5.0 in increments of 0.5");
+        }
+
+        Experience experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
+
+        boolean alreadyRated = userExperienceReviewRepository.existsByEmailAndExperienceId(email, experienceId);
+        if (alreadyRated) {
+            throw new DuplicatedResourceException("User has already rated this experience");
+        }
+
+        int currentRatingCount = experience.getRatingCount() >= 0 ? experience.getRatingCount() : 1;
+        double currentReputation = experience.getReputation();
+        double updatedReputation = ((currentReputation * currentRatingCount) + newRating) / (currentRatingCount + 1);
+        updatedReputation = Math.round(updatedReputation * 10) / 10.0;
+        experience.setReputation(updatedReputation);
+        experience.setRatingCount(currentRatingCount + 1);
+        experienceRepository.save(experience);
+
+        UserExperienceReview userExperienceReview = new UserExperienceReview();
+        userExperienceReview.setEmail(email);
+        userExperienceReview.setExperience(experience);
+        userExperienceReview.setRating(Math.round(newRating * 10) / 10.0);
+        userExperienceReview.setReviewMessage(review);
+        userExperienceReviewRepository.save(userExperienceReview);
+
+        return userExperienceReview;
+    }
+
+    @Override
+    public double alreadyRated(Long experienceId, String email) {
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + email));
+
+        experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
+
+        boolean alreadyRated = userExperienceReviewRepository.existsByEmailAndExperienceId(email, experienceId);
+        if (!alreadyRated) {
+            return 0;
+        }
+
+        UserExperienceReview userExperienceReview = userExperienceReviewRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + email));
+
+        return userExperienceReview.getRating();
+    }
+
+    @Override
+    public List<UserExperienceReview> getAlExperienceReviews(Long experienceId){
+        experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
+        return userExperienceReviewRepository.findAllByExperienceId(experienceId);
     }
 
     private void validateNoDuplicates(List<Long> ids, String fieldName) {

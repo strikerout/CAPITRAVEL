@@ -2,8 +2,11 @@ package com.capitravel.Capitravel.controller;
 
 import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.model.Experience;
+import com.capitravel.Capitravel.model.UserExperienceReview;
 import com.capitravel.Capitravel.service.ExperienceService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +78,32 @@ public class ExperienceController {
     public ResponseEntity<Void> deleteExperience(@PathVariable Long id) {
         experienceService.deleteExperience(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("reputation/{id}/{email}")
+    public ResponseEntity<UserExperienceReview> postReviewExperience(
+            @PathVariable Long id,
+            @PathVariable String email,
+            @RequestParam @DecimalMin(value = "1.0") @DecimalMax(value = "5.0") double rating,
+            @RequestBody String review) {
+
+        UserExperienceReview userExperienceReview = experienceService.reviewExperience(id, email, rating, review);
+        return ResponseEntity.ok(userExperienceReview);
+    }
+
+    @GetMapping("reputation/{id}/{email}")
+    public ResponseEntity<Double> alreadyRated(
+            @PathVariable Long id,
+            @PathVariable String email) {
+
+        Double alreadyRated = experienceService.alreadyRated(id, email);
+        return ResponseEntity.ok(alreadyRated);
+    }
+
+    @GetMapping("reputation/{id}")
+    public List<UserExperienceReview> getAllReviews(
+            @PathVariable Long id) {
+        return experienceService.getAlExperienceReviews(id);
     }
 
     private LocalDateTime parseToLocalDateTime(String dateStr, boolean isStart) {
