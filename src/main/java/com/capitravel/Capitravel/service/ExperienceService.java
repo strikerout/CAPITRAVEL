@@ -31,5 +31,5 @@ public interface ExperienceService {
 
     double alreadyRated(Long id, String email);
 
-    List<UserExperienceReview> getAlExperienceReviews(Long experienceId);
+    List<UserExperienceReview> getAllExperienceReviews(Long experienceId);
 }

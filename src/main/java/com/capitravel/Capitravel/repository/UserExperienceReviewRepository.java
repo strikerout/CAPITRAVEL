@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserExperienceReviewRepository extends JpaRepository<UserExperienceReview, Long> {
     boolean existsByEmailAndExperienceId(String email, Long experienceId);
 
-    Optional<UserExperienceReview> findByEmail(String email);
+    Optional<UserExperienceReview> findByEmailAndExperienceId(String email, Long experienceId);
 
     List<UserExperienceReview> findAllByExperienceId(Long experienceId);
 }

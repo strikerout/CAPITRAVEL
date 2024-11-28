@@ -258,14 +258,14 @@ public class ExperienceServiceImpl implements ExperienceService {
             return 0;
         }
 
-        UserExperienceReview userExperienceReview = userExperienceReviewRepository.findByEmail(email)
+        UserExperienceReview userExperienceReview = userExperienceReviewRepository.findByEmailAndExperienceId(email, experienceId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + email));
 
         return userExperienceReview.getRating();
     }
 
     @Override
-    public List<UserExperienceReview> getAlExperienceReviews(Long experienceId){
+    public List<UserExperienceReview> getAllExperienceReviews(Long experienceId){
         experienceRepository.findById(experienceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found"));
         return userExperienceReviewRepository.findAllByExperienceId(experienceId);

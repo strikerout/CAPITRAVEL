@@ -103,7 +103,7 @@ public class ExperienceController {
     @GetMapping("reputation/{id}")
     public List<UserExperienceReview> getAllReviews(
             @PathVariable Long id) {
-        return experienceService.getAlExperienceReviews(id);
+        return experienceService.getAllExperienceReviews(id);
     }
 
     private LocalDateTime parseToLocalDateTime(String dateStr, boolean isStart) {
