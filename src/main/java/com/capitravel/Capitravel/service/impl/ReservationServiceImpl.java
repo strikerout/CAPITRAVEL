@@ -10,6 +10,7 @@ import com.capitravel.Capitravel.model.User;
 import com.capitravel.Capitravel.repository.ExperienceRepository;
 import com.capitravel.Capitravel.repository.ReservationRepository;
 import com.capitravel.Capitravel.repository.UserRepository;
+import com.capitravel.Capitravel.service.EmailService;
 import com.capitravel.Capitravel.service.ReservationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private ExperienceRepository experienceRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public List<Reservation> getAllReservations() {
@@ -56,7 +60,9 @@ public class ReservationServiceImpl implements ReservationService {
             throw new ResourceInUseException("Selected dates are already taken.");
         }
 
-        return reservationRepository.save(reservation);
+        Reservation reservationSaved = reservationRepository.save(reservation);
+        emailService.sendReservationConfirmationEmail(user.getEmail(), user.getName(), user.getLastName());
+        return reservationSaved;
     }
 
     @Override
