@@ -23,7 +23,6 @@ public class Experience {
     private String timeUnit;
     private double reputation;
 
-    @JsonIgnore
     private int ratingCount = 1;
 
     @Lob
