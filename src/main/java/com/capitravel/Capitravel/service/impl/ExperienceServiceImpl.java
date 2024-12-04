@@ -311,7 +311,6 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .collect(Collectors.joining(" "));
     }
 
-
     private boolean isAvailableDuringRange(Experience exp, LocalDateTime startDate, LocalDateTime endDate) {
         Set<DayOfWeek> selectedDays = getDaysOfWeekInRange(startDate, endDate);
 
@@ -330,5 +329,4 @@ public class ExperienceServiceImpl implements ExperienceService {
 
         return daysInRange;
     }
-
 }
