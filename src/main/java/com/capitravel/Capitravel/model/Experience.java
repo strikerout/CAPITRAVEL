@@ -18,7 +18,10 @@ public class Experience {
     private String title;
     private String country;
     private String ubication;
+
+    @Column(length = 512)
     private String description;
+
     private Integer quantity;
     private String timeUnit;
     private double reputation;
