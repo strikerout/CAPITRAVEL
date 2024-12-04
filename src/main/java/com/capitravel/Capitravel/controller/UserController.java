@@ -1,8 +1,11 @@
 package com.capitravel.Capitravel.controller;
 
 import com.capitravel.Capitravel.dto.UserDTO;
+import com.capitravel.Capitravel.exception.ForbiddenException;
 import com.capitravel.Capitravel.model.User;
+import com.capitravel.Capitravel.service.TokenValidationService;
 import com.capitravel.Capitravel.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    TokenValidationService tokenValidationService;
+
     @GetMapping
     public List<User> getAllUsers(){
         return userService.getAllUsers();
@@ -34,7 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<User> getUser(@PathVariable String email) {
+    public ResponseEntity<User> getUser(@PathVariable String email, HttpServletRequest request) {
+        tokenValidationService.authorize(request, email);
         User user = userService.getUser(email);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -46,14 +53,15 @@ public class UserController {
     }
 
     @PostMapping("/favorites/{email}")
-    public ResponseEntity<Set<Long>> toggleFavorite(@PathVariable String email, @RequestParam Long experienceId) {
+    public ResponseEntity<Set<Long>> toggleFavorite(@PathVariable String email, @RequestParam Long experienceId, HttpServletRequest request) {
+        tokenValidationService.authorize(request, email);
         Set<Long> favoritesUpdated = userService.toggleFavorite(email, experienceId);
         return new ResponseEntity<>(favoritesUpdated , HttpStatus.OK);
     }
 
     @GetMapping("/favorites/{email}")
-    public List<Long> listFavorites(@PathVariable String email) {
+    public List<Long> listFavorites(@PathVariable String email, HttpServletRequest request) {
+        tokenValidationService.authorize(request, email);
         return userService.listFavorites(email);
     }
-
 }

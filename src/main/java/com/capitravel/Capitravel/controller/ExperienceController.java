@@ -4,6 +4,8 @@ import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.model.Experience;
 import com.capitravel.Capitravel.model.UserExperienceReview;
 import com.capitravel.Capitravel.service.ExperienceService;
+import com.capitravel.Capitravel.service.TokenValidationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -25,6 +27,9 @@ public class ExperienceController {
 
     @Autowired
     private ExperienceService experienceService;
+
+    @Autowired
+    TokenValidationService tokenValidationService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Experience> getExperienceById(@PathVariable Long id) {
@@ -85,7 +90,10 @@ public class ExperienceController {
             @PathVariable Long id,
             @PathVariable String email,
             @RequestParam @DecimalMin(value = "1.0") @DecimalMax(value = "5.0") double rating,
-            @RequestBody String review) {
+            @RequestBody String review,
+            HttpServletRequest request) {
+
+        tokenValidationService.authorize(request, email);
 
         UserExperienceReview userExperienceReview = experienceService.reviewExperience(id, email, rating, review);
         return ResponseEntity.ok(userExperienceReview);
@@ -94,7 +102,10 @@ public class ExperienceController {
     @GetMapping("reputation/{id}/{email}")
     public ResponseEntity<Double> alreadyRated(
             @PathVariable Long id,
-            @PathVariable String email) {
+            @PathVariable String email,
+            HttpServletRequest request) {
+
+        tokenValidationService.authorize(request, email);
 
         Double alreadyRated = experienceService.alreadyRated(id, email);
         return ResponseEntity.ok(alreadyRated);

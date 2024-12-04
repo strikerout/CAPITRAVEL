@@ -4,6 +4,8 @@ import com.capitravel.Capitravel.dto.ReservationDTO;
 import com.capitravel.Capitravel.dto.ReservationDatesDTO;
 import com.capitravel.Capitravel.model.Reservation;
 import com.capitravel.Capitravel.service.ReservationService;
+import com.capitravel.Capitravel.service.TokenValidationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,17 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
+    @Autowired
+    TokenValidationService tokenValidationService;
+
     @GetMapping
     public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody ReservationDTO reservationDTO, HttpServletRequest request) {
+        tokenValidationService.authorize(request, reservationDTO.getEmail());
         Reservation reservation = reservationService.createReservation(reservationDTO);
         return new ResponseEntity<>(reservation, HttpStatus.CREATED);
     }
@@ -55,7 +61,8 @@ public class ReservationController {
     }
 
     @GetMapping("/user/{email}")
-    public ResponseEntity<List<Reservation>> getReservationsByUser(@PathVariable String email) {
+    public ResponseEntity<List<Reservation>> getReservationsByUser(@PathVariable String email, HttpServletRequest request) {
+        tokenValidationService.authorize(request, email);
         List<Reservation> reservations = reservationService.getReservationsByUser(email);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
