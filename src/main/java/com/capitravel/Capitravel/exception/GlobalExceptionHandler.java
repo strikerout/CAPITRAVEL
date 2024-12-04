@@ -106,6 +106,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleForbiddenException(ForbiddenException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", "This user is not authorized to access to this resource");
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 }
