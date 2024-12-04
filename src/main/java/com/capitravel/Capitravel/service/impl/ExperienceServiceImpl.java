@@ -322,5 +322,4 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new BadRequestException("Start time must be earlier than end time in service hours.");
         }
     }
-
 }
