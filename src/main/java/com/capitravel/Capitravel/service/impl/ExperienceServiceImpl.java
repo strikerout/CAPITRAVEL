@@ -2,6 +2,7 @@ package com.capitravel.Capitravel.service.impl;
 
 import com.capitravel.Capitravel.dto.ExperienceDTO;
 import com.capitravel.Capitravel.dto.ReservationDatesDTO;
+import com.capitravel.Capitravel.exception.BadRequestException;
 import com.capitravel.Capitravel.exception.DuplicatedResourceException;
 import com.capitravel.Capitravel.exception.ResourceNotFoundException;
 import com.capitravel.Capitravel.model.*;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -137,6 +139,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
         validateNoDuplicates(experienceDTO.getCategoryIds(), CATEGORIES_FIELD_NAME);
         validateNoDuplicates(experienceDTO.getPropertyIds(), PROPERTIES_FIELD_NAME);
+        validateServiceHours(experienceDTO.getServiceHours());
 
         List<Category> categories = experienceDTO.getCategoryIds().stream()
                 .map(categoryId -> categoryRepository.findById(categoryId)
@@ -304,5 +307,19 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .filter(word -> !word.isEmpty())
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
                 .collect(Collectors.joining(" "));
+    }
+
+    private void validateServiceHours(String serviceHours) {
+        String[] times = serviceHours.split("-");
+        if (times.length != 2) {
+            throw new IllegalArgumentException("Invalid service hours format. Expected format: HH:mm-HH:mm");
+        }
+
+        LocalTime    startTime = LocalTime.parse(times[0]);
+        LocalTime    endTime = LocalTime.parse(times[1]);
+
+        if (!startTime.isBefore(endTime)) {
+            throw new BadRequestException("Start time must be earlier than end time in service hours.");
+        }
     }
 }
