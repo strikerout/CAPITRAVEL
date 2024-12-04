@@ -8,5 +8,5 @@ public interface EmailService {
 
     void sendConfirmationEmail(String email, String name, String lastName);
 
-    void sendReservationConfirmationEmail(String email, String name, String lastName);
+    void sendReservationConfirmationEmail(String email, String name, String lastName, String experienceTitle);
 }

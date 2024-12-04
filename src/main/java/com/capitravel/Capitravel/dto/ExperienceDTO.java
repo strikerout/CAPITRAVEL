@@ -40,9 +40,11 @@ public class ExperienceDTO {
     private String timeUnit;
 
     @NotEmpty(message = "Images cannot be empty")
+    @Size(max = 10, message = "You can upload a maximum of 10 images")
     private List<@NotBlank(message = "Images cannot be blank") String> images;
 
     @NotEmpty(message = "Categories are required")
+    @Size(max = 5, message = "You can select a maximum of 5 categories")
     private List<Long> categoryIds;
 
     private List<Long> propertyIds;
