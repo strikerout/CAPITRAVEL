@@ -13,6 +13,7 @@ import com.capitravel.Capitravel.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -125,6 +126,10 @@ public class ExperienceServiceImpl implements ExperienceService {
         if (startDate != null && endDate != null) {
             experiences = experiences.stream()
                     .filter(exp -> isAvailable(exp.getId(), startDate, endDate))
+                    .collect(Collectors.toList());
+
+            experiences = experiences.stream()
+                    .filter(exp -> isAvailableDuringRange(exp, startDate, endDate))
                     .collect(Collectors.toList());
         }
 
@@ -307,6 +312,25 @@ public class ExperienceServiceImpl implements ExperienceService {
                 .filter(word -> !word.isEmpty())
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
                 .collect(Collectors.joining(" "));
+    }
+
+    private boolean isAvailableDuringRange(Experience exp, LocalDateTime startDate, LocalDateTime endDate) {
+        Set<DayOfWeek> selectedDays = getDaysOfWeekInRange(startDate, endDate);
+
+        return exp.getAvailableDays().stream()
+                .anyMatch(selectedDays::contains);
+    }
+
+    private Set<DayOfWeek> getDaysOfWeekInRange(LocalDateTime startDate, LocalDateTime endDate) {
+        Set<DayOfWeek> daysInRange = new HashSet<>();
+        LocalDateTime currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            daysInRange.add(currentDate.getDayOfWeek());
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return daysInRange;
     }
 
     private void validateServiceHours(String serviceHours) {
