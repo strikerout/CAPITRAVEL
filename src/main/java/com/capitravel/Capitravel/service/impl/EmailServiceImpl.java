@@ -69,6 +69,4 @@ public class EmailServiceImpl implements EmailService {
 
         sendEmail(email, "Your Reservation Confirmation from Capi Travel", body, true, "classpath:static/images/banner_email.jpg", "bannerImage");
     }
-
-
 }
