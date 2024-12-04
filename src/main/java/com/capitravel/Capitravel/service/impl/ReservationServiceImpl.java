@@ -61,7 +61,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         Reservation reservationSaved = reservationRepository.save(reservation);
-        emailService.sendReservationConfirmationEmail(user.getEmail(), user.getName(), user.getLastName());
+        emailService.sendReservationConfirmationEmail(user.getEmail(), user.getName(), user.getLastName(), experience.getTitle());
         return reservationSaved;
     }
 
