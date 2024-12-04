@@ -47,6 +47,11 @@ public class JwtTokenUtil {
         return getUsernameFromToken(token) != null && !isTokenExpired(token);
     }
 
+    public String getEmailFromToken(String token) {
+        Claims claims = parseClaims(token);
+        return claims.getSubject();
+    }
+
     private boolean isTokenExpired(String token) {
         Claims claims = parseClaims(token);
         return claims.getExpiration().before(new Date());
