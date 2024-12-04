@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     public void sendConfirmationEmail(String email, String name, String lastName) {
-        String confirmationLink = "http://localhost:5173/login";
+        String confirmationLink = "https://capitravelfe-production.up.railway.app/login";
         String body = "<div style='text-align: center; font-family: Arial, sans-serif; color: #333;'>"
                 + "<div>"
                 + "    <img src='cid:bannerImage' alt='Capi Travel' style='max-width: 100%; width: 600px; height: auto; display: block; margin: 0 auto;' />"
@@ -54,14 +54,14 @@ public class EmailServiceImpl implements EmailService {
         sendEmail(email, "Welcome from Capi", body, true, "classpath:static/images/banner_email.jpg", "bannerImage");
     }
 
-    public void sendReservationConfirmationEmail(String email, String name, String lastName) {
-        String reservationLink = "http://localhost:5173/experiences/reservations";
+    public void sendReservationConfirmationEmail(String email, String name, String lastName, String experienceTitle) {
+        String reservationLink = "https://capitravelfe-production.up.railway.app/experiences/reservations";
         String body = "<div style='text-align: center; font-family: Arial, sans-serif; color: #333;'>"
                 + "<div>"
                 + "    <img src='cid:bannerImage' alt='Capi Travel' style='max-width: 100%; width: 600px; height: auto; display: block; margin: 0 auto;' />"
                 + "</div>"
                 + "<h2 style='color: #FF6B4A;'>Hi, " + name + " " + lastName + "!</h2>"
-                + "<p>Thank you for booking with Capi Travel! Your reservation has been confirmed.</p>"
+                + "<p>Thank you for booking with Capi Travel! Your reservation for <strong>" + experienceTitle + "</strong> has been confirmed.</p>"
                 + "<p>You're almost ready to begin your adventure. You can view and manage your reservations below:</p>"
                 + "<p>For the email address: <strong>" + email + "</strong></p>"
                 + "<a href='" + reservationLink + "' style='display: inline-block; width: 600px; padding: 10px 20px; background-color: #76d6c3; color: #333; font-weight: bold; text-decoration: none; border-radius: 5px; text-align: center;'>Go to My Reservations</a>"
@@ -69,5 +69,6 @@ public class EmailServiceImpl implements EmailService {
 
         sendEmail(email, "Your Reservation Confirmation from Capi Travel", body, true, "classpath:static/images/banner_email.jpg", "bannerImage");
     }
+
 
 }
