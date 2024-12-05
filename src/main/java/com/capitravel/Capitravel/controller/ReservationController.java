@@ -37,8 +37,9 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
+    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id, HttpServletRequest request) {
         Reservation reservation = reservationService.getReservationById(id);
+        tokenValidationService.authorize(request, reservation.getUser().getEmail());
         return new ResponseEntity<>(reservation, HttpStatus.OK);
     }
 
