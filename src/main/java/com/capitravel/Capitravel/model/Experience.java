@@ -26,7 +26,7 @@ public class Experience {
     private String timeUnit;
     private double reputation;
 
-    private int ratingCount = 1;
+    private int ratingCount;
 
     @Lob
     @ElementCollection

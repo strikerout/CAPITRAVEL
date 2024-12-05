@@ -166,7 +166,6 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setTimeUnit(experienceDTO.getTimeUnit());
         experience.setCategories(categories);
         experience.setProperties(properties);
-        experience.setReputation(getRandomReputation());
         experience.setServiceHours(experienceDTO.getServiceHours());
         experience.setAvailableDays(experienceDTO.getAvailableDays());
 
@@ -238,7 +237,7 @@ public class ExperienceServiceImpl implements ExperienceService {
             throw new DuplicatedResourceException("User has already rated this experience");
         }
 
-        int currentRatingCount = experience.getRatingCount() >= 0 ? experience.getRatingCount() : 1;
+        int currentRatingCount = experience.getRatingCount();
         double currentReputation = experience.getReputation();
         double updatedReputation = ((currentReputation * currentRatingCount) + newRating) / (currentRatingCount + 1);
         updatedReputation = Math.round(updatedReputation * 10) / 10.0;
@@ -289,11 +288,6 @@ public class ExperienceServiceImpl implements ExperienceService {
         if (uniqueIds.size() < ids.size()) {
             throw new DuplicatedResourceException("Duplicated " + fieldName + " are not allowed.");
         }
-    }
-
-    private double getRandomReputation() {
-        double randomValue = ThreadLocalRandom.current().nextDouble(1.0, 5.0);
-        return Math.round(randomValue * 10.0) / 10.0;
     }
 
     private boolean isAvailable(Long experienceId, LocalDateTime startDate, LocalDateTime endDate) {
