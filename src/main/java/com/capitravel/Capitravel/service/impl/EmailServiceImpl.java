@@ -55,7 +55,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     public void sendReservationConfirmationEmail(String email, String name, String lastName, String experienceTitle) {
-        String reservationLink = "https://capitravelfe-production.up.railway.app/experiences/reservations";
+        String reservationLink = "https://capitravelfe-production.up.railway.app/reservations";
         String body = "<div style='text-align: center; font-family: Arial, sans-serif; color: #333;'>"
                 + "<div>"
                 + "    <img src='cid:bannerImage' alt='Capi Travel' style='max-width: 100%; width: 600px; height: auto; display: block; margin: 0 auto;' />"
